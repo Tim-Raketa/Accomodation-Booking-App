@@ -3,4 +3,7 @@ grpc:
     grpc-devproblems-service:
       address: static://localhost:9000
       negotiationType: plaintext
+    grpc-reservation-service:
+      address: static://localhost:9001
+      negotiationType: plaintext
 

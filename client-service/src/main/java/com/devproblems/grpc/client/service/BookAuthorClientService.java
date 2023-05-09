@@ -8,11 +8,10 @@ import com.google.protobuf.Descriptors;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-
+import com.devProblems.ReservationServiceGrpc;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 /**
  * @author Dev Problems(A Sarang Kumar Tak)
  * @YoutubeChannel https://www.youtube.com/channel/UCVno4tMHEXietE3aUTodaZQ
@@ -25,6 +24,8 @@ public class BookAuthorClientService {
 
     @GrpcClient("grpc-devproblems-service")
     BookAuthorServiceGrpc.BookAuthorServiceStub asynchronousClient;
+    @GrpcClient("grpc-reservation-service")
+    ReservationServiceGrpc.ReservationServiceBlockingStub synchronousReservation;
 
     public Map<Descriptors.FieldDescriptor, Object> getAuthor(int authorId) {
         Author authorRequest = Author.newBuilder().setAuthorId(authorId).build();

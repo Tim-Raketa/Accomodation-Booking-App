@@ -6,6 +6,7 @@
     <modules>
         <module>client-service</module>
         <module>grpc-service</module>
+        <module>reservation-service</module>
         <module>proto</module>
     </modules>
     <groupId>com.sarang.devproblems</groupId>
