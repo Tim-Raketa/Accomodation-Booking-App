@@ -34,3 +34,9 @@ build/
 
 ### VS Code ###
 .vscode/
+proto/src/main/java/com/devproblems/Schema.java
+proto/src/main/java/com/devproblems/BookOrBuilder.java
+proto/src/main/java/com/devproblems/BookAuthorServiceGrpc.java
+proto/src/main/java/com/devproblems/Book.java
+proto/src/main/java/com/devproblems/AuthorOrBuilder.java
+proto/src/main/java/com/devproblems/Author.java
