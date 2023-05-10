@@ -1,0 +1,22 @@
+1. kopirati sadrzaj ovoj foldera u novi folder koji ce se zvati 'ime'-service
+2. promeniti artifact id iz pom.xml falja u tom novom folder iz
+                <artifactId>grpc-service</artifactId> u
+                <artifactId>"ime servisa"-service</artifactId>
+3. dodati novonastali artifact id u spisak modula u glavnom pom.xml koji otprilike izgleda ovako
+  <modules>
+        <module>client-service</module>
+        <module>grpc-service</module>
+        <module>reservation-service</module>
+        <module>user-service</module>
+        <module>proto</module>
+        ...
+        <artifactId>"ime servisa"-service</artifactId>//novi servis
+    </modules>
+4. kada generises servis iz protoa (postupak ce se nalaziti u drugom falju) treba ga anotirati sa imenom
+novog servisa
+    @GrpcClient("grpc-"ime servisa"-service")
+5. Dodati u client-service/src/resources/application.yml
+        grpc-"ime servisa"-service:
+          address: static://localhost:90xx
+          negotiationType: plaintext
+        xx-je redni broj poslednjeg servisa plus jedan
