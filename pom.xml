@@ -8,6 +8,7 @@
         <module>grpc-service</module>
         <module>reservation-service</module>
         <module>user-service</module>
+        <module>accommodation-service</module>
         <module>proto</module>
     </modules>
     <groupId>com.sarang.devproblems</groupId>

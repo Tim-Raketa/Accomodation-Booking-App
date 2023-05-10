@@ -1,0 +1,14 @@
+grpc:
+  server:
+    port: 9003
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/accommodations
+    username: postgres
+    password: ftn
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
