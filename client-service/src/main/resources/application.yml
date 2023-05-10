@@ -6,4 +6,7 @@ grpc:
     grpc-reservation-service:
       address: static://localhost:9001
       negotiationType: plaintext
+    grpc-user-service:
+      address: static://localhost:9002
+      negotiationType: plaintext
 

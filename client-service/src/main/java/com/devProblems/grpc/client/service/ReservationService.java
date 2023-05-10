@@ -15,7 +15,7 @@ public class ReservationService {
 
     public List<ReservationDTO> getAllReservations(){
         ListOfReservationResp emptyRequest= ListOfReservationResp.newBuilder().build();
-        ListOfReservationResp response=synchronousReservation.getAllReservations(emptyRequest);
+        ListOfReservationResp response= synchronousReservation.getAllReservations(emptyRequest);
         List<ReservationResp> resp=response.getReservationsList();
         return convert(resp);
     }

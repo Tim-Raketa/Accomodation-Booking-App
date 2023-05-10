@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class BookAuthorClientService {
 
-    @GrpcClient("grpc-devproblems-service")
+    @GrpcClient("grpc-user-service")
     BookAuthorServiceGrpc.BookAuthorServiceBlockingStub synchronousClient;
 
     @GrpcClient("grpc-devproblems-service")

@@ -9,15 +9,15 @@ import java.util.List;
 @GrpcService
 public class BookAuthorServerService extends com.devProblems.BookAuthorServiceGrpc.BookAuthorServiceImplBase {
 
-    @Override
-    public void getAuthor(Author request, StreamObserver<Author> responseObserver) {
+   // @Override
+    /*public void getAuthor(Author request, StreamObserver<Author> responseObserver) {
         TempDB.getAuthorsFromTempDb()
                 .stream()
                 .filter(author -> author.getAuthorId() == request.getAuthorId())
                 .findFirst()
                 .ifPresent(responseObserver::onNext);
         responseObserver.onCompleted();
-    }
+    }*/
 
     @Override
     public void getBooksByAuthor(Author request, StreamObserver<Book> responseObserver) {
