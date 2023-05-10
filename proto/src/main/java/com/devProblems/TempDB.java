@@ -1,14 +1,9 @@
-package com.devproblems;
+package com.devProblems;
 
-import com.devProblems.Author;
-import com.devProblems.Book;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Dev Problems(A Sarang Kumar Tak)
- * @YoutubeChannel https://www.youtube.com/channel/UCVno4tMHEXietE3aUTodaZQ
- */
+
 public class TempDB {
 
     public static List<Author> getAuthorsFromTempDb() {

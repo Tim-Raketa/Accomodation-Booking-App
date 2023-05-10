@@ -13,14 +13,14 @@ enum ReservationStatus {
 }
 
 message ReservationReq{
-  google.protobuf.Timestamp start_date = 1;
-  google.protobuf.Timestamp end_date = 2;
+  string start_date = 1;
+  string end_date = 2;
   int32 numberOfGuests=3;
   int32 accommodation_id=4;
 }
 message ReservationResp{
-  google.protobuf.Timestamp start_date = 1;
-  google.protobuf.Timestamp end_date = 2;
+  string start_date = 1;
+  string end_date = 2;
   int32 numberOfGuests=3;
   int32 accommodation_id=4;
   ReservationStatus status=5;
@@ -28,8 +28,12 @@ message ReservationResp{
 message isAvailable{
   bool available=1;
 }
+message ListOfReservationResp{
+  repeated ReservationResp reservations=1;
+}
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
   rpc CheckAvailability(ReservationReq) returns (isAvailable);
+  rpc GetAllReservations(ListOfReservationResp) returns(ListOfReservationResp);
 }

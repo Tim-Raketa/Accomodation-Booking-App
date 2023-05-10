@@ -1,20 +1,19 @@
-package com.devproblems.grpc.client.controller;
+package com.devProblems.grpc.client.controller;
 
-import com.devproblems.grpc.client.service.BookAuthorClientService;
+import com.devProblems.grpc.client.service.BookAuthorClientService;
 import com.google.protobuf.Descriptors;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Dev Problems(A Sarang Kumar Tak)
- * @YoutubeChannel https://www.youtube.com/channel/UCVno4tMHEXietE3aUTodaZQ
- */
 @RestController
+@RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class BookAuthorController {
 

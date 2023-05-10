@@ -1,13 +1,13 @@
-package com.devproblems.grpc.server.model;
+package com.devProblems.grpc.server.model;
 //import jakarta.pesistance.Entity;
 import lombok.*;
 
 import javax.persistence.*;
 
 import javax.persistence.Entity;
-import java.time.LocalDateTime;
-import com.devProblems.ReservationStatus;
+import java.time.LocalDate;
 
+import  com.devProblems.ReservationStatus;
 @Data
 @Entity
 @Table(name="reservation")
@@ -21,14 +21,15 @@ public class Reservation {
      Long id;
 
      @Column
-     private LocalDateTime startTime;
+     private LocalDate startTime;
      @Column
-     private LocalDateTime endTime;
+     private LocalDate endTime;
      @Column
      private Integer numberOfPeople;
      @Column
      private Integer accommodation_id;
      @Column
      private ReservationStatus status;
+
 
 }

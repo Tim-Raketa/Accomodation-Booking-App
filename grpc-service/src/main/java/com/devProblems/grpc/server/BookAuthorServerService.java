@@ -1,21 +1,13 @@
-package com.devproblems.grpc.server;
+package com.devProblems.grpc.server;
 
-import com.devProblems.Author;
-import com.devProblems.Book;
-import com.devProblems.BookAuthorServiceGrpc;
-import com.devproblems.TempDB;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
-
+import com.devProblems.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Dev Problems(A Sarang Kumar Tak)
- * @YoutubeChannel https://www.youtube.com/channel/UCVno4tMHEXietE3aUTodaZQ
- */
 @GrpcService
-public class BookAuthorServerService extends BookAuthorServiceGrpc.BookAuthorServiceImplBase {
+public class BookAuthorServerService extends com.devProblems.BookAuthorServiceGrpc.BookAuthorServiceImplBase {
 
     @Override
     public void getAuthor(Author request, StreamObserver<Author> responseObserver) {
