@@ -1,5 +1,6 @@
 package com.devProblems.grpc.client.service;
 
+import com.devProblems.grpc.client.DTO.CreateReservationDTO;
 import com.devProblems.grpc.client.DTO.ReservationDTO;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,31 @@ public class ReservationService {
             newList.add(new ReservationDTO(resp));
         }
         return newList;
+    }
+
+    public ReservationDTO addReservations(CreateReservationDTO res) {
+        ReservationResp response= synchronousReservation.createReservation(
+                ReservationReq.newBuilder()
+                        .setAccommodationId(res.getAccommodation_id())
+                        .setStartDate(res.getStart_date().toString())
+                        .setEndDate(res.getEnd_date().toString())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .build());
+
+        return new ReservationDTO(response);
+    }
+
+    public ReservationDTO updateReservation(ReservationDTO res) {
+        ReservationResp response= synchronousReservation.updateReservation(
+                UpdateReq.newBuilder()
+                        .setAccommodationId(res.getAccommodation_id())
+                        .setStartDate(res.getStart_date().toString())
+                        .setEndDate(res.getEnd_date().toString())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .setStatus(res.getStatus())
+                        .setId(res.getId())
+                        .build());
+        return new ReservationDTO(response);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 //import jakarta.pesistance.Entity;
+import com.devProblems.ReservationReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,5 +32,12 @@ public class Reservation {
      @Column
      private ReservationStatus status;
 
+     public Reservation(ReservationReq req){
+          this.startTime=LocalDate.parse(req.getStartDate());
+          this.endTime=LocalDate.parse(req.getEndDate());
+          this.numberOfPeople=req.getNumberOfGuests();
+          this.accommodation_id=req.getAccommodationId();
+          this.status=ReservationStatus.RESERVATION_STATUS_PENDING;
+     }
 
 }

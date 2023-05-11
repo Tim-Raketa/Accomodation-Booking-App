@@ -31,9 +31,18 @@ message isAvailable{
 message ListOfReservationResp{
   repeated ReservationResp reservations=1;
 }
+message UpdateReq{
+  string start_date = 1;
+  string end_date = 2;
+  int32 numberOfGuests=3;
+  int32 accommodation_id=4;
+  ReservationStatus status=5;
+  int32 id=6;
+}
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
+  rpc UpdateReservation(UpdateReq) returns (ReservationResp);
   rpc CheckAvailability(ReservationReq) returns (isAvailable);
   rpc GetAllReservations(ListOfReservationResp) returns(ListOfReservationResp);
 }
