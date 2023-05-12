@@ -54,6 +54,22 @@ public class ReservationService {
         return new ReservationDTO(response);
 
     }
+    public Boolean CancelReservation(Long id,Long userId) {
+        isAvailable response= synchronousReservation.deleteReservation(
+                Delete.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+
+    }
+    public Boolean DeleteReservation(Long id) {
+        isAvailable response= synchronousReservation.deleteReservation(
+                Delete.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+
+    }
 
     public Boolean isAvailable(CreateReservationDTO res) {
         isAvailable response= synchronousReservation.checkAvailability(

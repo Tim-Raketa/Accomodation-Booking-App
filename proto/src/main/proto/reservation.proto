@@ -39,10 +39,21 @@ message UpdateReq{
   ReservationStatus status=5;
   int32 id=6;
 }
+message Delete{
+  int64 id=1;
+}
+message Cancel{
+  int64 id=1;
+  int64 userId=2;
+}
+
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
   rpc UpdateReservation(UpdateReq) returns (ReservationResp);
   rpc CheckAvailability(ReservationReq) returns (isAvailable);
   rpc GetAllReservations(ListOfReservationResp) returns(ListOfReservationResp);
+  rpc DeleteReservation(Delete) returns(isAvailable);
+  rpc CancelReservation(Cancel) returns(isAvailable);
+
 }

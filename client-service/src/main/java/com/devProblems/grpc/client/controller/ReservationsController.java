@@ -27,6 +27,12 @@ public class ReservationsController {
     public ReservationDTO updateReservations(@RequestBody ReservationDTO res){
         return reservationService.updateReservation(res);
     }
+    @DeleteMapping(value = "/{id}")
+    public Boolean DeleteReservations(@PathVariable Long id){
+        return reservationService.DeleteReservation(id);
+    }
+    
+
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){
         return reservationService.isAvailable(res);

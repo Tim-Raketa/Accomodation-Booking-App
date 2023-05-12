@@ -56,6 +56,27 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     }
 
     @Override
+    public void deleteReservation(Delete request, StreamObserver<isAvailable> responseObserver) {
+        Reservation reservation;
+
+        try{reservation=repository.findById(Long.valueOf(request.getId())).get();}
+        catch (Exception e ){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        if(reservation.getStatus()!=ReservationStatus.RESERVATION_STATUS_PENDING){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED);
+        repository.save(reservation);
+        //repository.deleteById(request.getId());
+        responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        responseObserver.onCompleted();    
+    }
+    @Override
     public void checkAvailability(ReservationReq request, StreamObserver<isAvailable> responseObserver) {
         Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
         Boolean ret;
