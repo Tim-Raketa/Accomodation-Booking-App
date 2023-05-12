@@ -6,6 +6,7 @@ import com.devProblems.*;
 import com.devProblems.grpc.server.model.Reservation;
 import com.devProblems.grpc.server.repo.ReservationRepository;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,8 @@ import java.util.List;
 
 @GrpcService
 public class ReservationService extends ReservationServiceGrpc.ReservationServiceImplBase {
+    @GrpcClient("grpc-user-service")
+    BookAuthorServiceGrpc.BookAuthorServiceBlockingStub synchronousClient;
     @Autowired
     ReservationRepository repository;
 
@@ -54,7 +57,16 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     @Override
     public void checkAvailability(ReservationReq request, StreamObserver<isAvailable> responseObserver) {
-        super.checkAvailability(request, responseObserver);
+        Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
+        Boolean ret;
+        if(aut!=null)
+            ret=true;
+        else
+            ret=false;
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(ret).build());
+
+        responseObserver.onCompleted();
+
     }
 
     @Override

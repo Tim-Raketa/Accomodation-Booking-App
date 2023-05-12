@@ -54,4 +54,16 @@ public class ReservationService {
         return new ReservationDTO(response);
 
     }
+
+    public Boolean isAvailable(CreateReservationDTO res) {
+        isAvailable response= synchronousReservation.checkAvailability(
+                ReservationReq.newBuilder()
+                        .setAccommodationId(res.getAccommodation_id())
+                        .setStartDate(res.getStart_date().toString())
+                        .setEndDate(res.getEnd_date().toString())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .build());
+
+        return response.getAvailable();
+    }
 }
