@@ -27,6 +27,10 @@ public class ReservationsController {
     public ReservationDTO updateReservations(@RequestBody ReservationDTO res){
         return reservationService.updateReservation(res);
     }
+    @PostMapping ("/available")
+    public Boolean IsAvailable(@RequestBody CreateReservationDTO res){
+        return reservationService.isAvailable(res);
+    }
 
 
 }

@@ -1,6 +1,10 @@
 grpc:
   server:
     port: 9001
+  client:
+      grpc-user-service:
+        address: static://localhost:9002
+        negotiationType: plaintext
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/reservations
