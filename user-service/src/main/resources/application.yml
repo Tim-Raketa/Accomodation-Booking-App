@@ -1,3 +1,7 @@
 grpc:
   server:
     port: 9002
+spring:
+  data:
+    mongodb:
+      uri: mongodb://host:27017/Users

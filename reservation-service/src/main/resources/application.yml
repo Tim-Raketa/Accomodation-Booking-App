@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/reservations
     username: postgres
-    password: ftn
+    password: password
   jpa:
     properties:
       hibernate:
