@@ -35,7 +35,10 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 .setStartDate(reservation.getStartTime().toString())
                 .setEndDate(reservation.getEndTime().toString())
                 .setStatus(reservation.getStatus())
-                .setAccommodationId(reservation.getAccommodationId()).
+                .setAccommodationId(reservation.getAccommodationId())
+                        .setNumberOfGuests(reservation.getNumberOfPeople()).
+                setId(reservation.getId())
+                .setUsername(reservation.getUsername()).
                 build());
         responseObserver.onCompleted();
     }
@@ -43,13 +46,17 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     @Override
     public void createReservation(ReservationReq request, StreamObserver<ReservationResp> responseObserver) {
         Reservation res=new Reservation(request);
-        repository.save(res);
+        res=repository.save(res);
+
         responseObserver.onNext(
                 ReservationResp.newBuilder()
                         .setStartDate(res.getStartTime().toString())
                         .setEndDate(res.getEndTime().toString())
                         .setStatus(res.getStatus())
-                        .setAccommodationId(res.getAccommodationId()).
+                        .setAccommodationId(res.getAccommodationId())
+                        .setNumberOfGuests(res.getNumberOfPeople())
+                        .setUsername(res.getUsername()).
+                        setId(res.getId()).
                         build())
         ;
         responseObserver.onCompleted();
@@ -109,6 +116,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                      .setAccommodationId(res.getAccommodationId())
                      .setNumberOfGuests(res.getNumberOfPeople())
                      .setStatus(res.getStatus())
+                     .setUsername(res.getUsername())
                     .build());
         }
         return converted;

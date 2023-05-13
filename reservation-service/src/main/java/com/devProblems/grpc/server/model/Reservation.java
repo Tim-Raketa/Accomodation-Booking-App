@@ -28,7 +28,7 @@ public class Reservation {
      @Column
      private Integer numberOfPeople;
      @Column
-     private Integer userId;
+     private String username;
      @Column
      private Integer accommodationId;
      @Column
@@ -39,6 +39,7 @@ public class Reservation {
           this.endTime=LocalDate.parse(req.getEndDate());
           this.numberOfPeople=req.getNumberOfGuests();
           this.accommodationId=req.getAccommodationId();
+          this.username=req.getUsername();
           this.status=ReservationStatus.RESERVATION_STATUS_PENDING;
      }
 

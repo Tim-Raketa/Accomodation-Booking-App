@@ -31,7 +31,10 @@ public class ReservationsController {
     public Boolean DeleteReservations(@PathVariable Long id){
         return reservationService.DeleteReservation(id);
     }
-    
+    @PutMapping(value = "/{username}/{id}")
+    public Boolean CancelReservations(@PathVariable String username,@PathVariable Long id){
+        return reservationService.DeleteReservation(id);
+    }
 
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){

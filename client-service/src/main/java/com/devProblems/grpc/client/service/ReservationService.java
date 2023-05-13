@@ -32,10 +32,11 @@ public class ReservationService {
     public ReservationDTO addReservations(CreateReservationDTO res) {
         ReservationResp response= synchronousReservation.createReservation(
                 ReservationReq.newBuilder()
-                        .setAccommodationId(res.getAccommodation_id())
-                        .setStartDate(res.getStart_date().toString())
-                        .setEndDate(res.getEnd_date().toString())
+                        .setAccommodationId((int)res.getAccommodationId())
+                        .setStartDate(res.getStartDate().toString())
+                        .setEndDate(res.getEndDate().toString())
                         .setNumberOfGuests(res.getNumberOfGuests())
+                        .setUsername(res.getUsername())
                         .build());
 
         return new ReservationDTO(response);
@@ -44,9 +45,9 @@ public class ReservationService {
     public ReservationDTO updateReservation(ReservationDTO res) {
         ReservationResp response= synchronousReservation.updateReservation(
                 UpdateReq.newBuilder()
-                        .setAccommodationId(res.getAccommodation_id())
-                        .setStartDate(res.getStart_date().toString())
-                        .setEndDate(res.getEnd_date().toString())
+                        .setAccommodationId(res.getAccommodationId())
+                        .setStartDate(res.getStartDate())
+                        .setEndDate(res.getEndDate())
                         .setNumberOfGuests(res.getNumberOfGuests())
                         .setStatus(res.getStatus())
                         .setId(res.getId())
@@ -54,7 +55,7 @@ public class ReservationService {
         return new ReservationDTO(response);
 
     }
-    public Boolean CancelReservation(Long id,Long userId) {
+    public Boolean CancelReservation(Long id,String username) {
         isAvailable response= synchronousReservation.deleteReservation(
                 Delete.newBuilder()
                         .setId(id)
@@ -74,9 +75,9 @@ public class ReservationService {
     public Boolean isAvailable(CreateReservationDTO res) {
         isAvailable response= synchronousReservation.checkAvailability(
                 ReservationReq.newBuilder()
-                        .setAccommodationId(res.getAccommodation_id())
-                        .setStartDate(res.getStart_date().toString())
-                        .setEndDate(res.getEnd_date().toString())
+                        .setAccommodationId(res.getAccommodationId())
+                        .setStartDate(res.getStartDate().toString())
+                        .setEndDate(res.getEndDate().toString())
                         .setNumberOfGuests(res.getNumberOfGuests())
                         .build());
 
