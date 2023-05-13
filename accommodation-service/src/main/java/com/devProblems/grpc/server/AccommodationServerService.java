@@ -1,15 +1,15 @@
 package com.devProblems.grpc.server;
 
-import com.devProblems.AccommodationReq;
-import com.devProblems.AccommodationResp;
-import com.devProblems.AccommodationServiceGrpc;
-import com.devProblems.ListOfAccommodationResp;
+import com.devProblems.*;
 import com.devProblems.grpc.server.model.Accommodation;
+import com.devProblems.grpc.server.model.RentableInterval;
 import com.devProblems.grpc.server.repo.AccommodationRepository;
+import com.devProblems.grpc.server.repo.RentableIntervalRepository;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +18,23 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
 
     @Autowired
     AccommodationRepository accommodationRepository;
+    @Autowired
+    RentableIntervalRepository rentableIntervalRepository;
+
+    @Override
+    public void isAutomatic(AccommodationAvailable request, StreamObserver<Automatic> responseObserver) {
+        RentableInterval interval=
+                rentableIntervalRepository.findAll().stream().filter(interval1-> interval1.getAccommodationId()==request.getId()
+                        &&
+                        (interval1.getStartTime()
+                                .isBefore
+                                        (LocalDate.parse(request.getStartDate()))
+                                &&(interval1.getEndTime() .isAfter(LocalDate.parse(request.getEndDate()))
+                        ))
+                ).findFirst().get();
+        responseObserver.onNext(Automatic.newBuilder().setAuto(interval.getAutomaticAcceptance()).build());
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void createAccommodation(AccommodationReq request, StreamObserver<AccommodationResp> responseObserver) {

@@ -24,6 +24,10 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     @GrpcClient("grpc-user-service")
     BookAuthorServiceGrpc.BookAuthorServiceBlockingStub synchronousClient;
     //ovo zameni za user client koji ce milos ubaciti
+
+    @GrpcClient("grpc-accommodation-service")
+    AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClientAccommodation;
+    //ovo zameni za user client koji ce milos ubaciti
     @Autowired
     ReservationRepository repository;
 
@@ -51,7 +55,13 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     @Override
     public void createReservation(ReservationReq request, StreamObserver<ReservationResp> responseObserver) {
         Reservation res=new Reservation(request);
-        //if(synchronousClient.IsAutomatic(reservation.getAccommodationId()))  res.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
+        Automatic auto=synchronousClientAccommodation.isAutomatic(AccommodationAvailable.newBuilder()
+                .setId(res.getAccommodationId())
+                .setStartDate(res.getStartTime().toString())
+                .setEndDate(res.getEndTime().toString())
+                .build());
+        if(auto.getAuto())
+            res.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
 
         res=repository.save(res);
         responseObserver.onNext(
