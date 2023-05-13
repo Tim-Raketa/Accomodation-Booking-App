@@ -25,7 +25,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     @Override
     public void updateReservation(UpdateReq request, StreamObserver<ReservationResp> responseObserver) {
         Reservation reservation=repository.findById(Long.valueOf(request.getId())).get();
-        reservation.setAccommodation_id(request.getAccommodationId());
+        reservation.setAccommodationId(request.getAccommodationId());
         reservation.setStartTime(LocalDate.parse(request.getStartDate()));
         reservation.setEndTime(LocalDate.parse(request.getEndDate()));
         reservation.setStatus(request.getStatus());
@@ -35,7 +35,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 .setStartDate(reservation.getStartTime().toString())
                 .setEndDate(reservation.getEndTime().toString())
                 .setStatus(reservation.getStatus())
-                .setAccommodationId(reservation.getAccommodation_id()).
+                .setAccommodationId(reservation.getAccommodationId()).
                 build());
         responseObserver.onCompleted();
     }
@@ -49,12 +49,33 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                         .setStartDate(res.getStartTime().toString())
                         .setEndDate(res.getEndTime().toString())
                         .setStatus(res.getStatus())
-                        .setAccommodationId(res.getAccommodation_id()).
+                        .setAccommodationId(res.getAccommodationId()).
                         build())
         ;
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void deleteReservation(Delete request, StreamObserver<isAvailable> responseObserver) {
+        Reservation reservation;
+
+        try{reservation=repository.findById(Long.valueOf(request.getId())).get();}
+        catch (Exception e ){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        if(reservation.getStatus()!=ReservationStatus.RESERVATION_STATUS_PENDING){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED);
+        repository.save(reservation);
+        //repository.deleteById(request.getId());
+        responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        responseObserver.onCompleted();    
+    }
     @Override
     public void checkAvailability(ReservationReq request, StreamObserver<isAvailable> responseObserver) {
         Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
@@ -85,7 +106,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
             converted.add(ReservationResp.newBuilder()
                     .setEndDate(res.getEndTime().toString())
                     .setStartDate(res.getStartTime().toString())
-                     .setAccommodationId(res.getAccommodation_id())
+                     .setAccommodationId(res.getAccommodationId())
                      .setNumberOfGuests(res.getNumberOfPeople())
                      .setStatus(res.getStatus())
                     .build());
