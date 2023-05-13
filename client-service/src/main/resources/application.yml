@@ -9,4 +9,7 @@ grpc:
     grpc-user-service:
       address: static://localhost:9002
       negotiationType: plaintext
+    grpc-accommodation-service:
+        address: static://localhost:9003
+        negotiationType: plaintext
 

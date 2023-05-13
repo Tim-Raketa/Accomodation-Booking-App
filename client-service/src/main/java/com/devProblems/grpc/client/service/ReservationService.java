@@ -1,5 +1,7 @@
 package com.devProblems.grpc.client.service;
 
+import com.devProblems.grpc.client.DTO.CreateReservationDTO;
+import com.devProblems.grpc.client.DTO.PendingDTO;
 import com.devProblems.grpc.client.DTO.ReservationDTO;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
@@ -27,4 +29,82 @@ public class ReservationService {
         }
         return newList;
     }
+
+    public ReservationDTO addReservations(CreateReservationDTO res) {
+        ReservationResp response= synchronousReservation.createReservation(
+                ReservationReq.newBuilder()
+                        .setAccommodationId((int)res.getAccommodationId())
+                        .setStartDate(res.getStartDate().toString())
+                        .setEndDate(res.getEndDate().toString())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .setUsername(res.getUsername())
+                        .build());
+
+        return new ReservationDTO(response);
+    }
+
+    public ReservationDTO updateReservation(ReservationDTO res) {
+        ReservationResp response= synchronousReservation.updateReservation(
+                UpdateReq.newBuilder()
+                        .setAccommodationId(res.getAccommodationId())
+                        .setStartDate(res.getStartDate())
+                        .setEndDate(res.getEndDate())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .setStatus(res.getStatus())
+                        .setId(res.getId())
+                        .build());
+        return new ReservationDTO(response);
+
+    }
+    public Boolean CancelReservation(Long id) {
+        isAvailable response= synchronousReservation.cancelReservation(
+                AccommodationId.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+
+    }
+    public Boolean AcceptReservation(Long id) {
+        isAvailable response= synchronousReservation.acceptReservation(
+                AccommodationId.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+
+    }
+    public Boolean DeleteReservation(Long id) {
+        isAvailable response= synchronousReservation.deleteReservation(
+                AccommodationId.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+
+    }
+
+    public Boolean isAvailable(CreateReservationDTO res) {
+        isAvailable response= synchronousReservation.checkAvailability(
+                ReservationReq.newBuilder()
+                        .setAccommodationId(res.getAccommodationId())
+                        .setStartDate(res.getStartDate().toString())
+                        .setEndDate(res.getEndDate().toString())
+                        .setNumberOfGuests(res.getNumberOfGuests())
+                        .build());
+
+        return response.getAvailable();
+    }
+
+    public List<PendingDTO> getAllPending(Long accommodationId) {
+        AccommodationId Request= AccommodationId.newBuilder().setId(accommodationId).build();
+        allPending response= synchronousReservation.showAllPendingReservations(Request);
+        List<Pending> resp=response.getPendingList();
+        return convertPending(resp);
+    }
+    public List<PendingDTO> convertPending(List<Pending> xyz){
+        List<PendingDTO> newList=new ArrayList<>();
+        for (Pending resp: xyz) {
+            newList.add(new PendingDTO(resp));
+        }
+        return newList;
+    }
+
 }

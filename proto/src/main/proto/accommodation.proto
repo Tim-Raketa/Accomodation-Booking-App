@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.devProblems;
+
+message AccommodationReq{
+  string name = 1;
+  string location = 2;
+  string perks = 3;
+  int32 minGuests = 4;
+  int32 maxGuests = 5;
+}
+
+message AccommodationResp{
+  string name = 1;
+  string location = 2;
+  string perks = 3;
+  int32 minGuests = 4;
+  int32 maxGuests = 5;
+}
+
+message ListOfAccommodationResp{
+  repeated AccommodationResp accommodations = 1;
+}
+
+message AccommodationAvailable{
+  int64 id=1;
+  string startDate=2;
+  string endDate=3;
+}
+
+message Automatic{
+  bool auto=1;
+}
+
+service AccommodationService{
+  rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
+  rpc getAllAccommodations(ListOfAccommodationResp) returns(ListOfAccommodationResp);
+  rpc IsAutomatic(AccommodationAvailable) returns(Automatic);
+}

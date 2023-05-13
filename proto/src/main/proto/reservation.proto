@@ -17,6 +17,7 @@ message ReservationReq{
   string end_date = 2;
   int32 numberOfGuests=3;
   int32 accommodation_id=4;
+  string username=5;
 }
 message ReservationResp{
   string start_date = 1;
@@ -24,6 +25,9 @@ message ReservationResp{
   int32 numberOfGuests=3;
   int32 accommodation_id=4;
   ReservationStatus status=5;
+  string username=6;
+  int64 id=7;
+
 }
 message isAvailable{
   bool available=1;
@@ -31,9 +35,43 @@ message isAvailable{
 message ListOfReservationResp{
   repeated ReservationResp reservations=1;
 }
+message UpdateReq{
+  string start_date = 1;
+  string end_date = 2;
+  int32 numberOfGuests=3;
+  int32 accommodation_id=4;
+  ReservationStatus status=5;
+  int64 id=6;
+  string username=7;
+}
+message AccommodationId{
+  int64 id=1;
+}
+message Cancel{
+  int64 id=1;
+  string username=2;
+}
+message Pending{
+  string start_date = 1;
+  string end_date = 2;
+  int32 numberOfGuests=3;
+  string username=4;
+  int64 id=5;
+  int32 cancelCount=6;
+  int64 accommodationId=7;
+}
+message allPending{
+  repeated Pending pending=1;
+}
+
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
+  rpc UpdateReservation(UpdateReq) returns (ReservationResp);
   rpc CheckAvailability(ReservationReq) returns (isAvailable);
   rpc GetAllReservations(ListOfReservationResp) returns(ListOfReservationResp);
+  rpc DeleteReservation(AccommodationId) returns(isAvailable);
+  rpc CancelReservation(AccommodationId) returns(isAvailable);
+  rpc AcceptReservation(AccommodationId) returns (isAvailable);
+  rpc ShowAllPendingReservations(AccommodationId) returns(allPending);
 }
