@@ -98,7 +98,8 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
             responseObserver.onCompleted();
             return;
         }
-        if(reservation.getStatus()!=ReservationStatus.RESERVATION_STATUS_ACCEPTED){
+        if(reservation.getStatus()!=ReservationStatus.RESERVATION_STATUS_ACCEPTED
+                || reservation.getStartTime().isBefore(LocalDate.now().plusDays(1))){
             responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
             responseObserver.onCompleted();
             return;
