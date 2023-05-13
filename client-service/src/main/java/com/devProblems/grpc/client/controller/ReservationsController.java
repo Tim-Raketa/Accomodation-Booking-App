@@ -1,6 +1,7 @@
 package com.devProblems.grpc.client.controller;
 
 import com.devProblems.grpc.client.DTO.CreateReservationDTO;
+import com.devProblems.grpc.client.DTO.PendingDTO;
 import com.devProblems.grpc.client.DTO.ReservationDTO;
 import com.devProblems.grpc.client.service.ReservationService;
 import lombok.AllArgsConstructor;
@@ -31,11 +32,18 @@ public class ReservationsController {
     public Boolean DeleteReservations(@PathVariable Long id){
         return reservationService.DeleteReservation(id);
     }
-    @PutMapping(value = "/{username}/{id}")
-    public Boolean CancelReservations(@PathVariable String username,@PathVariable Long id){
-        return reservationService.DeleteReservation(id);
+    @PutMapping(value = "/cancel/{id}")
+    public Boolean CancelReservations(@PathVariable Long id){
+        return reservationService.CancelReservation(id);
     }
-
+    @PutMapping(value = "/accept/{id}")
+    public Boolean AcceptReservations(@PathVariable Long id){
+        return reservationService.AcceptReservation(id);
+    }
+    @GetMapping("/accommodation={accommodationId}")
+    public List<PendingDTO> getReservationsPending(@PathVariable Long accommodationId){
+        return reservationService.getAllPending(accommodationId);
+    }
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){
         return reservationService.isAvailable(res);

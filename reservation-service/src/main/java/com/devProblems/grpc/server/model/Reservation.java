@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 //import jakarta.pesistance.Entity;
+import com.devProblems.Pending;
 import com.devProblems.ReservationReq;
 import lombok.*;
 
@@ -42,5 +43,6 @@ public class Reservation {
           this.username=req.getUsername();
           this.status=ReservationStatus.RESERVATION_STATUS_PENDING;
      }
+
 
 }
