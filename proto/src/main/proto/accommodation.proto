@@ -20,6 +20,11 @@ message AccommodationResp{
   int32 maxGuests = 5;
 }
 
+message ListOfAccommodationResp{
+  repeated AccommodationResp accommodations = 1;
+}
+
 service AccommodationService{
   rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
+  rpc getAllAccommodations(ListOfAccommodationResp) returns(ListOfAccommodationResp);
 }
