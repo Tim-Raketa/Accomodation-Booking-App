@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.devProblems;
+
+message AccommodationReq{
+  string name = 1;
+  string location = 2;
+  string perks = 3;
+  int32 minGuests = 4;
+  int32 maxGuests = 5;
+}
+
+message AccommodationResp{
+  string name = 1;
+  string location = 2;
+  string perks = 3;
+  int32 minGuests = 4;
+  int32 maxGuests = 5;
+}
+
+service AccommodationService{
+  rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
+}

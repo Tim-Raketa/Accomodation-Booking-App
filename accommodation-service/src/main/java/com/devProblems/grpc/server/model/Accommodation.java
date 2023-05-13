@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 
+import com.devProblems.AccommodationReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,12 @@ public class Accommodation {
 
     //private slike
 
-
+    public Accommodation(AccommodationReq req){
+        this.name = req.getName();
+        this.location = req.getLocation();
+        this.perks = req.getPerks();
+        this.minGuests = req.getMinGuests();
+        this.maxGuests = req.getMaxGuests();
+    }
 
 }
