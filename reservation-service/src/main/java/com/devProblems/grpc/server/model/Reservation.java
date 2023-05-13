@@ -1,9 +1,8 @@
 package com.devProblems.grpc.server.model;
 //import jakarta.pesistance.Entity;
-import com.devProblems.ReservationStatus;
-import com.devProblems.Pending;
-import com.devProblems.ReservationReq;
 
+import com.devProblems.ReservationReq;
+import com.devProblems.ReservationStatus;
 import lombok.*;
 
 import javax.persistence.*;

@@ -1,7 +1,6 @@
 package com.devProblems.grpc.client.DTO;
 
 import com.devProblems.Pending;
-import com.devProblems.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

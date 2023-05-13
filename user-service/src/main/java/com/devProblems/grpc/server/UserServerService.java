@@ -13,11 +13,6 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     UserRepository repository;
 
     @Override
-    public void getUser(com.devProblems.User request, StreamObserver<com.devProblems.User> responseObserver) {
-
-    }
-
-    @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
         User newUser = new User(request);
         newUser = repository.save(newUser);

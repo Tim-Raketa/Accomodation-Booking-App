@@ -15,7 +15,7 @@ public class UserService {
 
     public boolean register(UserDTO userReq) {
         Created response = synchronousUser.register(
-                UserReq .newBuilder()
+                UserReq.newBuilder()
                         .setUsername(userReq.getUsername())
                         .setPassword(userReq.getPassword())
                         .setName(userReq.getName())

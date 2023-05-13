@@ -25,6 +25,5 @@ message Created{
 message Empty {}
 
 service UserService {
-    rpc getUser(UserReq) returns(UserReq){}
     rpc register(UserReq) returns (Created){}
 }
