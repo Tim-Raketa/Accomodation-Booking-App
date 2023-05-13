@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 //import jakarta.pesistance.Entity;
+import com.devProblems.ReservationStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,7 +8,6 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 
-import  com.devProblems.ReservationStatus;
 @Data
 @Entity
 @Table(name="reservation")

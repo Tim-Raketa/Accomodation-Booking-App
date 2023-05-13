@@ -1,20 +1,30 @@
 package com.devProblems.grpc.server;
 
 import com.devProblems.*;
+import com.devProblems.grpc.server.repository.UserRepository;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.devProblems.grpc.server.model.User;
 
 @GrpcService
 public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
+    @Autowired
+    UserRepository repository;
+
     @Override
-    public void getUser(User request, StreamObserver<User> responseObserver) {
-        TempUser.getUsersTempDB()
-                .stream()
-                .filter(user -> user.getUsername() == request.getUsername())
-                .findFirst()
-                .ifPresent(responseObserver::onNext);        //On next uvek treba
-        responseObserver.onCompleted();// on completed uvek treba
+    public void getUser(com.devProblems.User request, StreamObserver<com.devProblems.User> responseObserver) {
+
     }
 
-
+    @Override
+    public void register(UserReq request, StreamObserver<Created> responseObserver) {
+        User newUser = new User(request);
+        newUser = repository.save(newUser);
+        responseObserver.onNext(
+                Created.newBuilder()
+                        .setCreated(true).build())
+        ;
+        responseObserver.onCompleted();
+    }
 }

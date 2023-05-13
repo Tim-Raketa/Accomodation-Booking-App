@@ -8,7 +8,7 @@ enum UserType {
   HOST = 1;
 }
 
-message User{
+message UserReq{
     string username = 1;
     string password = 2;
     string name = 3;
@@ -18,8 +18,13 @@ message User{
     UserType type = 7;
 }
 
+message Created{
+  bool created = 1;
+}
+
 message Empty {}
 
 service UserService {
-    rpc getUser(User) returns(User){}
+    rpc getUser(UserReq) returns(UserReq){}
+    rpc register(UserReq) returns (Created){}
 }

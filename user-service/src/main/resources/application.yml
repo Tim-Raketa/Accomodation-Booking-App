@@ -4,4 +4,4 @@ grpc:
 spring:
   data:
     mongodb:
-      uri: mongodb://host:27017/Users
+      uri: mongodb://localhost:27017/Users
