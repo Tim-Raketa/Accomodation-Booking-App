@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 public class AccommodationDTO {
 
+    Long id;
     String name;
     String location;
     String perks;
@@ -18,6 +19,7 @@ public class AccommodationDTO {
     Integer maxGuests;
 
     public AccommodationDTO(com.devProblems.AccommodationResp accommodation){
+        this.id = accommodation.getId();
         this.name = accommodation.getName();
         this.location = accommodation.getLocation();
         this.perks = accommodation.getPerks();
