@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 
+import com.devProblems.AccommodationReq;
 import lombok.*;
 
 import javax.persistence.*;

@@ -47,6 +47,9 @@ message UpdateReq{
 message AccommodationId{
   int64 id=1;
 }
+message UsernameReq{
+  string username=1;
+}
 message Cancel{
   int64 id=1;
   string username=2;
@@ -74,4 +77,6 @@ service ReservationService {
   rpc CancelReservation(AccommodationId) returns(isAvailable);
   rpc AcceptReservation(AccommodationId) returns (isAvailable);
   rpc ShowAllPendingReservations(AccommodationId) returns(allPending);
+  rpc ShowAllAcceptedReservations(UsernameReq) returns(allPending);
+
 }

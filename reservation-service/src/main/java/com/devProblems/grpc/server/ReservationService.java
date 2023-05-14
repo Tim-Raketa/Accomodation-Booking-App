@@ -18,16 +18,12 @@ import java.util.List;
 
 @GrpcService
 public class ReservationService extends ReservationServiceGrpc.ReservationServiceImplBase {
-    //ovo zameni za user client koji ce milos ubaciti
-    //ovo zameni za user client koji ce milos ubaciti
-    //ovo zameni za user client koji ce milos ubaciti
+
     @GrpcClient("grpc-user-service")
     UserServiceGrpc.UserServiceBlockingStub synchronousClient;
-    //ovo zameni za user client koji ce milos ubaciti
 
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClientAccommodation;
-    //ovo zameni za user client koji ce milos ubaciti
     @Autowired
     ReservationRepository repository;
 
@@ -170,7 +166,16 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
     }
+    @Override
+    public void showAllAcceptedReservations(UsernameReq request, StreamObserver<allPending> responseObserver) {
+        List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getUsername().equalsIgnoreCase(request.getUsername()))
+                .filter(reservation -> reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED)
+                .filter(reservation -> reservation.getStartTime().isAfter(LocalDate.now()))
+                .toList();
 
+        responseObserver.onNext(allPending.newBuilder().addAllPending(convertToPending(reservations)).build());
+        responseObserver.onCompleted();
+    }
     @Override
     public void showAllPendingReservations(AccommodationId request, StreamObserver<allPending> responseObserver) {
         List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getAccommodationId()==request.getId())
