@@ -16,6 +16,7 @@ message UserReq{
     string email = 5;
     string residency = 6;
     UserType type = 7;
+    int32 CancelCount=8;
 }
 
 message Created{

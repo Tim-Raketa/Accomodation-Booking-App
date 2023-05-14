@@ -22,6 +22,7 @@ public class User {
     private String email;
     private String residency;
     private UserType type;
+    private Integer CancelCount;
 
     public User(UserReq req){
         this.username = req.getUsername();
@@ -31,6 +32,7 @@ public class User {
         this.email = req.getEmail();
         this.residency = req.getResidency();
         this.type = req.getType();
+        this.CancelCount=req.getCancelCount();
     }
 
     public UserType getType() {
