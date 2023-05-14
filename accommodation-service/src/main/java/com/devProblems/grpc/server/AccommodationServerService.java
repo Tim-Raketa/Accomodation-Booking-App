@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @GrpcService
 public class AccommodationServerService extends AccommodationServiceGrpc.AccommodationServiceImplBase {
@@ -116,5 +117,25 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                     .build());
         }
         return converted;
+    }
+
+    @Override
+    public void getById(AccommodationIdReq request, StreamObserver<AccommodationResp> responseObserver) {
+        Optional<Accommodation> accommodation=accommodationRepository.findById(request.getId());
+        if(accommodation.isPresent())
+            responseObserver.onNext(
+                    AccommodationResp.newBuilder()
+                            .setId(accommodation.get().getId())
+                            .setName(accommodation.get().getName())
+                            .setLocation(accommodation.get().getLocation())
+                            .setPerks(accommodation.get().getPerks())
+                            .setMinGuests(accommodation.get().getMinGuests())
+                            .setMaxGuests(accommodation.get().getMaxGuests())
+                            .build()
+            );
+         else  responseObserver.onNext(
+                AccommodationResp.newBuilder().build());
+         responseObserver.onCompleted();
+
     }
 }
