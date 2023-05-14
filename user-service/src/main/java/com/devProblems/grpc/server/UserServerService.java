@@ -26,4 +26,21 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         }
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void login(LoginReq request, StreamObserver<UserTokenStateRes> responseObserver) {
+        Optional<User> tempUser = repository.findById(request.getUsername());
+        if (tempUser.isEmpty() || !request.getPassword().equals(tempUser.get().getPassword())) {
+            responseObserver.onNext(UserTokenStateRes.newBuilder()
+                    .setAccessToken("")
+                    .setRole("")
+                    .build());
+        } else {
+            responseObserver.onNext(UserTokenStateRes.newBuilder()
+                    .setAccessToken(tempUser.get().getUsername())
+                    .setRole(tempUser.get().getType().toString())
+                    .build());
+        }
+        responseObserver.onCompleted();
+    }
 }

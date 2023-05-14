@@ -32,4 +32,8 @@ public class User {
         this.residency = req.getResidency();
         this.type = req.getType();
     }
+
+    public UserType getType() {
+        return type;
+    }
 }
