@@ -63,7 +63,21 @@ message RentableIntervalResp{
   float pricePerGuest = 6;
   bool automaticAcceptance = 7;
 }
-
+message SearchResp{
+  int64 accommodationId=1;
+  string name=2;
+  string location=3;
+  string perks=4;
+  int64 totalPrice=5;
+  int64 priceOfAccommodation=6;
+  int64 pricePerGuest=7;
+}
+message SearchReq{
+  int32 numberOfGuests=1;
+  string location = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
 message AccommodationIdReq{
   int64 id=1;
 }
@@ -80,4 +94,5 @@ service AccommodationService{
   rpc createRentableInterval(RentableIntervalReq) returns (RentableIntervalResp);
   rpc getRentableIntervalsByAccommodationId(AccommodationIdReq) returns(ListOfRentableIntervalResp);
   rpc updateRentableInterval(UpdateRentableIntervalReq) returns(RentableIntervalResp);
+  rpc search(SearchReq)returns(SearchResp);
 }

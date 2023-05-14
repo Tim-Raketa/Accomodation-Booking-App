@@ -3,6 +3,8 @@ package com.devProblems.grpc.client.service;
 import com.devProblems.*;
 import com.devProblems.grpc.client.DTO.AccommodationDTO;
 import com.devProblems.grpc.client.DTO.RentableIntervalDTO;
+import com.devProblems.grpc.client.DTO.SearchRequestDTO;
+import com.devProblems.grpc.client.DTO.SearchResultDTO;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
@@ -91,5 +93,12 @@ public class AccommodationClientService {
         AccommodationIdReq request = AccommodationIdReq.newBuilder().setId(id).build();
         AccommodationResp response = synchronousAccommodation.getById(request);
         return new AccommodationDTO(response);
+    }
+
+    public SearchResultDTO search(SearchRequestDTO searchReq) {
+        SearchReq request=SearchReq.newBuilder().setStartDate(searchReq.getStartDate()).setEndDate(searchReq.getEndDate())
+                .setLocation(searchReq.getLocation()).setNumberOfGuests(searchReq.getNumberOfGuests()).build();
+        SearchResp response=synchronousAccommodation.search(request);
+        return new SearchResultDTO(response);
     }
 }

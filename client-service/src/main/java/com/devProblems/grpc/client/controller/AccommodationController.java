@@ -2,6 +2,8 @@ package com.devProblems.grpc.client.controller;
 
 import com.devProblems.grpc.client.DTO.AccommodationDTO;
 import com.devProblems.grpc.client.DTO.RentableIntervalDTO;
+import com.devProblems.grpc.client.DTO.SearchRequestDTO;
+import com.devProblems.grpc.client.DTO.SearchResultDTO;
 import com.devProblems.grpc.client.service.AccommodationClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -41,5 +43,9 @@ public class AccommodationController {
     @GetMapping("/rentableIntervals/accommodationId={accommodationId}")
     public List<RentableIntervalDTO> getRentableIntervalsByAccommodationId(@PathVariable Long accommodationId){
         return accommodationClientService.getRentableIntervalsByAccommodationId(accommodationId);
+    }
+    @PostMapping("/search")
+    public SearchResultDTO search(@RequestBody SearchRequestDTO searchReq){
+        return accommodationClientService.search(searchReq);
     }
 }
