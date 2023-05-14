@@ -54,6 +54,24 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     }
 
     @Override
+    public void createRentableInterval(RentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
+        RentableInterval rentableInterval = new RentableInterval(request);
+        rentableIntervalRepository.save(rentableInterval);
+        responseObserver.onNext(
+                RentableIntervalResp.newBuilder()
+                        .setId(rentableInterval.getId())
+                        .setAccommodationId(rentableInterval.getAccommodationId())
+                        .setStartTime(rentableInterval.getStartTime().toString())
+                        .setEndTime(rentableInterval.getEndTime().toString())
+                        .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
+                        .setPricePerGuest(rentableInterval.getPricePerGuest())
+                        .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getAllAccommodations(ListOfAccommodationResp request, StreamObserver<ListOfAccommodationResp> responseObserver) {
         ListOfAccommodationResp accommodations = ListOfAccommodationResp.newBuilder()
                 .addAllAccommodations(convert(accommodationRepository.findAll())).build();
