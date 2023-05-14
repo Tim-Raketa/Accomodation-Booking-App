@@ -52,13 +52,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         );
         responseObserver.onCompleted();
     }
-
-    /*
-    List<Reservation> reservations= repository.findAll().stream().filter(res->res.getAccommodationId()==reservation.getAccommodationId())
-                .filter(res -> res.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
-                .filter(res-> !(res.getEndTime().isBefore(reservation.getStartTime()) || res.getStartTime().isAfter(reservation.getStartTime()) )).toList();
-    * */
-
+    
     @Override
     public void createRentableInterval(RentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
         RentableInterval interval = new RentableInterval(request);
