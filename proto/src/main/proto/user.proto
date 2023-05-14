@@ -16,6 +16,7 @@ message UserReq{
     string email = 5;
     string residency = 6;
     UserType type = 7;
+    int32 CancelCount=8;
 }
 
 message Created{
@@ -27,6 +28,12 @@ message Empty {}
 message UserTokenStateRes {
   string accessToken = 1;
   string role = 2;
+}
+message UsernameMsg {
+  string username = 1;
+}
+message CancelCountMsg {
+  int32 cancelCount = 1;
 }
 
 message LoginReq {
@@ -54,4 +61,5 @@ service UserService {
     rpc login(LoginReq) returns (UserTokenStateRes){}
     rpc getUser(UserId) returns (UserReq){}
     rpc edit(EditReq) returns (UserTokenStateRes){}
+    rpc getCancelCount(UsernameMsg) returns (CancelCountMsg){}
 }
