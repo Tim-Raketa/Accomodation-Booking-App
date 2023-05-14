@@ -6,6 +6,7 @@ import com.devProblems.grpc.server.model.RentableInterval;
 import com.devProblems.grpc.server.repo.AccommodationRepository;
 import com.devProblems.grpc.server.repo.RentableIntervalRepository;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,9 @@ import java.util.List;
 
 @GrpcService
 public class AccommodationServerService extends AccommodationServiceGrpc.AccommodationServiceImplBase {
+
+    @GrpcClient("grpc-reservation-service")
+    ReservationServiceGrpc.ReservationServiceBlockingStub synchronousClient;
 
     @Autowired
     AccommodationRepository accommodationRepository;
@@ -52,7 +56,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         );
         responseObserver.onCompleted();
     }
-    
+
     @Override
     public void createRentableInterval(RentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
         RentableInterval interval = new RentableInterval(request);
@@ -86,18 +90,28 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         rentableInterval.setPriceOfAccommodation(request.getPriceOfAccommodation());
         rentableInterval.setPricePerGuest(request.getPricePerGuest());
         rentableInterval.setAutomaticAcceptance(request.getAutomaticAcceptance());
-        rentableIntervalRepository.save(rentableInterval);
-        responseObserver.onNext(
-                RentableIntervalResp.newBuilder()
-                        .setId(rentableInterval.getId())
-                        .setAccommodationId(rentableInterval.getAccommodationId())
-                        .setStartTime(rentableInterval.getStartTime().toString())
-                        .setEndTime(rentableInterval.getEndTime().toString())
-                        .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
-                        .setPricePerGuest(rentableInterval.getPricePerGuest())
-                        .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
-                        .build()
-        );
+
+        List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rI->rI.getAccommodationId() == rentableInterval.getAccommodationId())
+                .filter(rI-> !(rI.getEndTime().isBefore(rentableInterval.getStartTime()) || rI.getStartTime().isAfter(rentableInterval.getStartTime()) )).toList();
+
+        isAvailable isAvailable = synchronousClient.isIntervalFree(isIntervalFreMsg.newBuilder().build());
+
+        if(!intervals.isEmpty() && !(isAvailable.getAvailable())){
+            responseObserver.onNext(RentableIntervalResp.newBuilder().build());
+        } else {
+            rentableIntervalRepository.save(rentableInterval);
+            responseObserver.onNext(
+                    RentableIntervalResp.newBuilder()
+                            .setId(rentableInterval.getId())
+                            .setAccommodationId(rentableInterval.getAccommodationId())
+                            .setStartTime(rentableInterval.getStartTime().toString())
+                            .setEndTime(rentableInterval.getEndTime().toString())
+                            .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
+                            .setPricePerGuest(rentableInterval.getPricePerGuest())
+                            .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
+                            .build()
+            );
+        }
         responseObserver.onCompleted();
     }
 
