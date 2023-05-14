@@ -1,5 +1,6 @@
 package com.devProblems.grpc.client.controller;
 
+import com.devProblems.grpc.client.DTO.EditDTO;
 import com.devProblems.grpc.client.DTO.LoginDTO;
 import com.devProblems.grpc.client.DTO.UserDTO;
 import com.devProblems.grpc.client.DTO.UserTokenState;
@@ -22,7 +23,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public UserTokenState login(@RequestBody LoginDTO loginDTO) {return userService.login(loginDTO);}
+    public UserTokenState login(@RequestBody LoginDTO loginDTO) { return userService.login(loginDTO); }
 
+    @GetMapping(value = "/getUser/{username}")
+    public UserDTO getUser(@PathVariable String username) { return userService.getUser(username); }
 
+    @PostMapping(value = "/edit")
+    public UserTokenState edit(@RequestBody EditDTO editDTO){
+        return userService.edit(editDTO);
+    }
 }

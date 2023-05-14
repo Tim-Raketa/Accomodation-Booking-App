@@ -45,15 +45,58 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     }
 
     @Override
-    public void getCancelCount(UsernameMsg request, StreamObserver<CancelCountMsg> responseObserver) {
+    public void getUser(UserId request, StreamObserver<UserReq> responseObserver) {
         Optional<User> tempUser = repository.findById(request.getUsername());
-        if (!tempUser.isEmpty()) {
-            responseObserver.onNext(CancelCountMsg.newBuilder()
-                    .setCancelCount(tempUser.get().getCancelCount())
+        responseObserver.onNext(
+                UserReq.newBuilder()
+                    .setUsername(tempUser.get().getUsername())
+                    .setPassword(tempUser.get().getPassword())
+                    .setName(tempUser.get().getName())
+                    .setSurname(tempUser.get().getSurname())
+                    .setEmail(tempUser.get().getEmail())
+                    .setResidency(tempUser.get().getResidency())
+                    .setType(tempUser.get().getType())
                     .build());
-        } else {
-            responseObserver.onError(new Exception("username doesn't exist"));
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void edit(EditReq request, StreamObserver<UserTokenStateRes> responseObserver) {
+        User newUser = new User(request);
+        Optional<User> tempUser = repository.findById(newUser.getUsername());
+        //  provjera da li je promijenjen username                                              //  provjera da li u bazi postoji novi username
+        if (!request.getUsername().equals(request.getOldUsername()) && !tempUser.isEmpty()  && request.getUsername().equals(tempUser.get().getUsername())) {
+            responseObserver.onNext(
+                    UserTokenStateRes.newBuilder()
+                            .setAccessToken("")
+                            .setRole("")
+                            .build());
+        }else{
+            newUser = repository.save(newUser);
+            if(!request.getUsername().equals(request.getOldUsername())){
+                Optional<User> oldUser = repository.findById(request.getOldUsername());
+                repository.delete(oldUser.get());
+            }
+            responseObserver.onNext(
+                    UserTokenStateRes.newBuilder()
+                            .setAccessToken(request.getUsername())
+                            .setRole(request.getType().toString())
+                            .build());
         }
-            responseObserver.onCompleted();
+        responseObserver.onCompleted();
+    }
+
+      @Override
+      public void getCancelCount(UsernameMsg request, StreamObserver<CancelCountMsg> responseObserver) {
+          Optional<User> tempUser = repository.findById(request.getUsername());
+          if (!tempUser.isEmpty()) {
+              responseObserver.onNext(CancelCountMsg.newBuilder()
+                      .setCancelCount(tempUser.get().getCancelCount())
+                      .build());
+          } else {
+              responseObserver.onError(new Exception("username doesn't exist"));
+          }
+              responseObserver.onCompleted();
+
     }
 }

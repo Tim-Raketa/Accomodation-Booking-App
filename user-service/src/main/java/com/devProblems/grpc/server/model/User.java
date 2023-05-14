@@ -1,5 +1,6 @@
 package com.devProblems.grpc.server.model;
 
+import com.devProblems.EditReq;
 import com.devProblems.UserReq;
 import com.devProblems.UserType;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,16 @@ public class User {
         this.type = req.getType();
         this.CancelCount=req.getCancelCount();
     }
+    public User(EditReq req){
+        this.username = req.getUsername();
+        this.password = req.getPassword();
+        this.name = req.getName();
+        this.surname = req.getSurname();
+        this.email = req.getEmail();
+        this.residency = req.getResidency();
+        this.type = req.getType();
+    }
+
 
     public UserType getType() {
         return type;

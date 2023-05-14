@@ -41,8 +41,25 @@ message LoginReq {
   string password = 2;
 }
 
+message UserId {
+  string username = 1;
+}
+message EditReq{
+  string username = 1;
+  string password = 2;
+  string name = 3;
+  string surname = 4;
+  string email = 5;
+  string residency = 6;
+  UserType type = 7;
+  string oldUsername = 8;
+}
+
+
 service UserService {
     rpc register(UserReq) returns (Created){}
     rpc login(LoginReq) returns (UserTokenStateRes){}
+    rpc getUser(UserId) returns (UserReq){}
+    rpc edit(EditReq) returns (UserTokenStateRes){}
     rpc getCancelCount(UsernameMsg) returns (CancelCountMsg){}
 }
