@@ -29,4 +29,9 @@ public class AccommodationController {
     public RentableIntervalDTO createRentableInterval(@RequestBody RentableIntervalDTO rentableInterval){
         return accommodationClientService.createRentableInterval(rentableInterval);
     }
+
+    @GetMapping("/rentableIntervals/accommodationId={accommodationId}")
+    public List<RentableIntervalDTO> getRentableIntervalsByAccommodationId(@PathVariable Long accommodationId){
+        return accommodationClientService.getRentableIntervalsByAccommodationId(accommodationId);
+    }
 }

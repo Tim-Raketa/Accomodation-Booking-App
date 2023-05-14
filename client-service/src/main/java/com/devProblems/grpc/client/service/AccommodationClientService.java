@@ -56,4 +56,20 @@ public class AccommodationClientService {
         }
         return newList;
     }
+
+    public List<RentableIntervalDTO> getRentableIntervalsByAccommodationId(Long accommodationId){
+        AccommodationIdReq request = AccommodationIdReq.newBuilder().setId(accommodationId).build();
+        ListOfRentableIntervalResp response = synchronousAccommodation.getRentableIntervalsByAccommodationId(request);
+        List<RentableIntervalResp> resp = response.getRentableIntervalsList();
+        return convertRentableIntervals(resp);
+    }
+
+    public List<RentableIntervalDTO> convertRentableIntervals(List<RentableIntervalResp> rentableIntervals) {
+        List<RentableIntervalDTO> newList = new ArrayList<>();
+        for(RentableIntervalResp resp: rentableIntervals){
+            newList.add(new RentableIntervalDTO(resp));
+        }
+        return newList;
+    }
+
 }

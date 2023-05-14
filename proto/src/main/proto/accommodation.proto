@@ -54,9 +54,18 @@ message RentableIntervalResp{
   bool automaticAcceptance = 7;
 }
 
+message AccommodationIdReq{
+  int64 id=1;
+}
+
+message ListOfRentableIntervalResp{
+  repeated RentableIntervalResp rentableIntervals = 1;
+}
+
 service AccommodationService{
   rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
   rpc getAllAccommodations(ListOfAccommodationResp) returns(ListOfAccommodationResp);
   rpc IsAutomatic(AccommodationAvailable) returns(Automatic);
   rpc createRentableInterval(RentableIntervalReq) returns (RentableIntervalResp);
+  rpc getRentableIntervalsByAccommodationId(AccommodationIdReq) returns(ListOfRentableIntervalResp);
 }
