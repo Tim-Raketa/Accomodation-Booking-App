@@ -74,6 +74,7 @@ message ListOfRentableIntervalResp{
 
 service AccommodationService{
   rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
+  rpc getById(AccommodationIdReq) returns(AccommodationResp);
   rpc getAllAccommodations(ListOfAccommodationResp) returns(ListOfAccommodationResp);
   rpc IsAutomatic(AccommodationAvailable) returns(Automatic);
   rpc createRentableInterval(RentableIntervalReq) returns (RentableIntervalResp);

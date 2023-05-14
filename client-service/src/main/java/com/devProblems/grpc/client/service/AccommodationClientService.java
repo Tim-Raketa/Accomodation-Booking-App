@@ -87,4 +87,9 @@ public class AccommodationClientService {
         return newList;
     }
 
+    public AccommodationDTO getById(Long id) {
+        AccommodationIdReq request = AccommodationIdReq.newBuilder().setId(id).build();
+        AccommodationResp response = synchronousAccommodation.getById(request);
+        return new AccommodationDTO(response);
+    }
 }

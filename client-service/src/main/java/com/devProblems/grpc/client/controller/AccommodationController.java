@@ -19,7 +19,10 @@ public class AccommodationController {
     public AccommodationDTO createAccommodation(@RequestBody AccommodationDTO accommodation){
         return accommodationClientService.createAccommodation(accommodation);
     }
-
+    @GetMapping(value = "/{id}")
+    public AccommodationDTO createAccommodation(@PathVariable Long id){
+        return accommodationClientService.getById(id);
+    }
     @GetMapping("/")
     public List<AccommodationDTO> getAllAccommodations(){
         return accommodationClientService.getAllAccommodations();
