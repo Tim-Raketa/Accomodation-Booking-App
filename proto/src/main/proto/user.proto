@@ -62,4 +62,5 @@ service UserService {
     rpc getUser(UserId) returns (UserReq){}
     rpc edit(EditReq) returns (UserTokenStateRes){}
     rpc getCancelCount(UsernameMsg) returns (CancelCountMsg){}
+    rpc IncreaseCancelCount(UsernameMsg) returns(CancelCountMsg){}
 }

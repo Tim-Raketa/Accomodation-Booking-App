@@ -116,7 +116,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         }
         reservation.setStatus(ReservationStatus.RESERVATION_STATUS_CANCELED);
         repository.save(reservation);
-        //synchronousClient.increaseCancelCount(reservation.getUsername())
+        synchronousClient.increaseCancelCount(UsernameMsg.newBuilder().setUsername(reservation.getUsername()).build());
 
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
@@ -126,7 +126,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     public void checkAvailability(ReservationReq request, StreamObserver<isAvailable> responseObserver) {
         // Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
         Boolean ret;
-       // if(aut!=null)
+        // if(aut!=null)
             ret=true;
         //else
           //  ret=false;

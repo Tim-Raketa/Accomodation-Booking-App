@@ -99,4 +99,13 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
               responseObserver.onCompleted();
 
     }
+
+    @Override
+    public void increaseCancelCount(UsernameMsg request, StreamObserver<CancelCountMsg> responseObserver) {
+            User tempUser = repository.findById(request.getUsername()).get();
+            tempUser.setCancelCount(tempUser.getCancelCount()+1);
+            repository.save(tempUser);
+            responseObserver.onNext(CancelCountMsg.newBuilder().setCancelCount(tempUser.getCancelCount()).build());
+            responseObserver.onCompleted();
+    }
 }
