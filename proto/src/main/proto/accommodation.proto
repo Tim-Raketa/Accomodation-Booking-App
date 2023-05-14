@@ -35,8 +35,37 @@ message Automatic{
   bool auto=1;
 }
 
+message RentableIntervalReq{
+  int64 accommodationId = 1;
+  string startTime = 2;
+  string endTime = 3;
+  float priceOfAccommodation = 4;
+  float pricePerGuest = 5;
+  bool automaticAcceptance = 6;
+}
+
+message RentableIntervalResp{
+  int64 id = 1;
+  int64 accommodationId = 2;
+  string startTime = 3;
+  string endTime = 4;
+  float priceOfAccommodation = 5;
+  float pricePerGuest = 6;
+  bool automaticAcceptance = 7;
+}
+
+message AccommodationIdReq{
+  int64 id=1;
+}
+
+message ListOfRentableIntervalResp{
+  repeated RentableIntervalResp rentableIntervals = 1;
+}
+
 service AccommodationService{
   rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
   rpc getAllAccommodations(ListOfAccommodationResp) returns(ListOfAccommodationResp);
   rpc IsAutomatic(AccommodationAvailable) returns(Automatic);
+  rpc createRentableInterval(RentableIntervalReq) returns (RentableIntervalResp);
+  rpc getRentableIntervalsByAccommodationId(AccommodationIdReq) returns(ListOfRentableIntervalResp);
 }
