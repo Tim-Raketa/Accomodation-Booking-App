@@ -53,21 +53,33 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         responseObserver.onCompleted();
     }
 
+    /*
+    List<Reservation> reservations= repository.findAll().stream().filter(res->res.getAccommodationId()==reservation.getAccommodationId())
+                .filter(res -> res.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
+                .filter(res-> !(res.getEndTime().isBefore(reservation.getStartTime()) || res.getStartTime().isAfter(reservation.getStartTime()) )).toList();
+    * */
+
     @Override
     public void createRentableInterval(RentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
-        RentableInterval rentableInterval = new RentableInterval(request);
-        rentableIntervalRepository.save(rentableInterval);
-        responseObserver.onNext(
-                RentableIntervalResp.newBuilder()
-                        .setId(rentableInterval.getId())
-                        .setAccommodationId(rentableInterval.getAccommodationId())
-                        .setStartTime(rentableInterval.getStartTime().toString())
-                        .setEndTime(rentableInterval.getEndTime().toString())
-                        .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
-                        .setPricePerGuest(rentableInterval.getPricePerGuest())
-                        .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
-                        .build()
-        );
+        RentableInterval interval = new RentableInterval(request);
+        List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rentableInterval->rentableInterval.getAccommodationId() == interval.getAccommodationId())
+                .filter(rentableInterval-> !(rentableInterval.getEndTime().isBefore(interval.getStartTime()) || rentableInterval.getStartTime().isAfter(interval.getStartTime()) )).toList();
+        if(!intervals.isEmpty()){
+            responseObserver.onNext(RentableIntervalResp.newBuilder().build());
+        } else {
+            rentableIntervalRepository.save(interval);
+            responseObserver.onNext(
+                    RentableIntervalResp.newBuilder()
+                            .setId(interval.getId())
+                            .setAccommodationId(interval.getAccommodationId())
+                            .setStartTime(interval.getStartTime().toString())
+                            .setEndTime(interval.getEndTime().toString())
+                            .setPriceOfAccommodation(interval.getPriceOfAccommodation())
+                            .setPricePerGuest(interval.getPricePerGuest())
+                            .setAutomaticAcceptance(interval.getAutomaticAcceptance())
+                            .build()
+            );
+        }
         responseObserver.onCompleted();
     }
 
