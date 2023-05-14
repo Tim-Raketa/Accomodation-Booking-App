@@ -23,6 +23,7 @@ public class UserService {
                         .setEmail(userReq.getEmail())
                         .setResidency(userReq.getResidency())
                         .setType(userReq.getType())
+                        .setCancelCount(0)
                         .build());
 
         return response.getCreated();
