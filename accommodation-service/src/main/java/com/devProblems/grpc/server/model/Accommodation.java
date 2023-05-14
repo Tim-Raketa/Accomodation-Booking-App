@@ -30,7 +30,7 @@ public class Accommodation {
 
     //private slike
 
-    public Accommodation(AccommodationReq req){
+    public Accommodation(com.devProblems.AccommodationReq req){
         this.name = req.getName();
         this.location = req.getLocation();
         this.perks = req.getPerks();

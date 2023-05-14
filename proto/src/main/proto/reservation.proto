@@ -67,6 +67,11 @@ message allPending{
   repeated Pending pending=1;
 }
 
+message isIntervalFreMsg{
+  string start_date = 1;
+  string end_date = 2;
+  int64 accommodationId=3;
+}
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
@@ -77,6 +82,6 @@ service ReservationService {
   rpc CancelReservation(AccommodationId) returns(isAvailable);
   rpc AcceptReservation(AccommodationId) returns (isAvailable);
   rpc ShowAllPendingReservations(AccommodationId) returns(allPending);
+  rpc IsIntervalFree(isIntervalFreMsg) returns (isAvailable);
   rpc ShowAllAcceptedReservations(UsernameReq) returns(allPending);
-
 }

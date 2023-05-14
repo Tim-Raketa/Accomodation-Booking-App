@@ -33,15 +33,15 @@ public class Reservation {
      @Column
      private Integer accommodationId;
      @Column
-     private ReservationStatus status;
+     private com.devProblems.ReservationStatus status;
 
-     public Reservation(ReservationReq req){
+     public Reservation(com.devProblems.ReservationReq req){
           this.startTime=LocalDate.parse(req.getStartDate());
           this.endTime=LocalDate.parse(req.getEndDate());
           this.numberOfPeople=req.getNumberOfGuests();
           this.accommodationId=req.getAccommodationId();
           this.username=req.getUsername();
-          this.status=ReservationStatus.RESERVATION_STATUS_PENDING;
+          this.status=com.devProblems.ReservationStatus.RESERVATION_STATUS_PENDING;
      }
 
 

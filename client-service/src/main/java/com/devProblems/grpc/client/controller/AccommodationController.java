@@ -33,6 +33,11 @@ public class AccommodationController {
         return accommodationClientService.createRentableInterval(rentableInterval);
     }
 
+    @PutMapping(value = "/updateRentableInterval")
+    public RentableIntervalDTO updateRentableInterval(@RequestBody RentableIntervalDTO rentableInterval){
+        return accommodationClientService.updateRentableInterval(rentableInterval);
+    }
+
     @GetMapping("/rentableIntervals/accommodationId={accommodationId}")
     public List<RentableIntervalDTO> getRentableIntervalsByAccommodationId(@PathVariable Long accommodationId){
         return accommodationClientService.getRentableIntervalsByAccommodationId(accommodationId);

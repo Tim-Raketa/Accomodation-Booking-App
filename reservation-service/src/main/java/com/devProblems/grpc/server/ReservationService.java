@@ -177,6 +177,19 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onCompleted();
     }
     @Override
+    public void isIntervalFree(isIntervalFreMsg request, StreamObserver<isAvailable> responseObserver) {
+        List<Reservation> reservations= repository.findAll().stream().filter(res->res.getAccommodationId()==request.getAccommodationId())
+                .filter(res -> res.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED)
+                .filter(res-> !(res.getEndTime().isBefore(LocalDate.parse(request.getStartDate())) || res.getStartTime().isAfter(LocalDate.parse(request.getEndDate())) )).
+                toList();
+        if(reservations.isEmpty())
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        else
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void showAllPendingReservations(AccommodationId request, StreamObserver<allPending> responseObserver) {
         List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getAccommodationId()==request.getId())
                 .filter(reservation -> reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
