@@ -59,4 +59,30 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
                     .build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void edit(EditReq request, StreamObserver<UserTokenStateRes> responseObserver) {
+        User newUser = new User(request);
+        Optional<User> tempUser = repository.findById(newUser.getUsername());
+        //  provjera da li je promijenjen username                                              //  provjera da li u bazi postoji novi username
+        if (!request.getUsername().equals(request.getOldUsername()) && !tempUser.isEmpty()  && request.getUsername().equals(tempUser.get().getUsername())) {
+            responseObserver.onNext(
+                    UserTokenStateRes.newBuilder()
+                            .setAccessToken("")
+                            .setRole("")
+                            .build());
+        }else{
+            newUser = repository.save(newUser);
+            if(!request.getUsername().equals(request.getOldUsername())){
+                Optional<User> oldUser = repository.findById(request.getOldUsername());
+                repository.delete(oldUser.get());
+            }
+            responseObserver.onNext(
+                    UserTokenStateRes.newBuilder()
+                            .setAccessToken(request.getUsername())
+                            .setRole(request.getType().toString())
+                            .build());
+        }
+        responseObserver.onCompleted();
+    }
 }

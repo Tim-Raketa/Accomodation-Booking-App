@@ -1,4 +1,4 @@
-package com.devProblems.grpc.server.model;
+package com.devProblems.grpc.client.DTO;
 
 import com.devProblems.EditReq;
 import com.devProblems.UserReq;
@@ -7,15 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Getter
 @Setter
-@Document("users")
-public class User {
-    @Id
+@AllArgsConstructor
+@NoArgsConstructor
+public class EditDTO {
+
     private String username;
     private String password;
     private String name;
@@ -23,8 +21,9 @@ public class User {
     private String email;
     private String residency;
     private UserType type;
+    private String oldUsername;
 
-    public User(UserReq req){
+    public EditDTO(EditReq req){
         this.username = req.getUsername();
         this.password = req.getPassword();
         this.name = req.getName();
@@ -32,19 +31,6 @@ public class User {
         this.email = req.getEmail();
         this.residency = req.getResidency();
         this.type = req.getType();
-    }
-    public User(EditReq req){
-        this.username = req.getUsername();
-        this.password = req.getPassword();
-        this.name = req.getName();
-        this.surname = req.getSurname();
-        this.email = req.getEmail();
-        this.residency = req.getResidency();
-        this.type = req.getType();
-    }
-
-
-    public UserType getType() {
-        return type;
+        this.oldUsername = req.getOldUsername();
     }
 }

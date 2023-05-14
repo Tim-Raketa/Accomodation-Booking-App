@@ -1,6 +1,7 @@
 package com.devProblems.grpc.client.service;
 
 import com.devProblems.*;
+import com.devProblems.grpc.client.DTO.EditDTO;
 import com.devProblems.grpc.client.DTO.LoginDTO;
 import com.devProblems.grpc.client.DTO.UserDTO;
 import com.devProblems.grpc.client.DTO.UserTokenState;
@@ -44,6 +45,22 @@ public class UserService {
                         .build());
 
         return new UserDTO(response);
+    }
+
+    public UserTokenState edit(EditDTO editReq) {
+        UserTokenStateRes response = synchronousUser.edit(
+                EditReq.newBuilder()
+                        .setUsername(editReq.getUsername())
+                        .setPassword(editReq.getPassword())
+                        .setName(editReq.getName())
+                        .setSurname(editReq.getSurname())
+                        .setEmail(editReq.getEmail())
+                        .setResidency(editReq.getResidency())
+                        .setType(editReq.getType())
+                        .setOldUsername(editReq.getOldUsername())
+                        .build());
+
+        return new UserTokenState(response);
     }
 
 }
