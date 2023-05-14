@@ -42,6 +42,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         accommodationRepository.save(accommodation);
         responseObserver.onNext(
                 AccommodationResp.newBuilder()
+                        .setId(accommodation.getId())
                         .setName(accommodation.getName())
                         .setLocation(accommodation.getLocation())
                         .setPerks(accommodation.getPerks())
@@ -64,6 +65,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         List<AccommodationResp> converted = new ArrayList<>();
         for(Accommodation accommodation : accommodations){
             converted.add(AccommodationResp.newBuilder()
+                    .setId(accommodation.getId())
                     .setName(accommodation.getName())
                     .setLocation(accommodation.getLocation())
                     .setPerks(accommodation.getPerks())

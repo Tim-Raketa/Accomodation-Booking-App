@@ -13,11 +13,12 @@ message AccommodationReq{
 }
 
 message AccommodationResp{
-  string name = 1;
-  string location = 2;
-  string perks = 3;
-  int32 minGuests = 4;
-  int32 maxGuests = 5;
+  int64 id = 1;
+  string name = 2;
+  string location = 3;
+  string perks = 4;
+  int32 minGuests = 5;
+  int32 maxGuests = 6;
 }
 
 message ListOfAccommodationResp{
