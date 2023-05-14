@@ -22,7 +22,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     //ovo zameni za user client koji ce milos ubaciti
     //ovo zameni za user client koji ce milos ubaciti
     @GrpcClient("grpc-user-service")
-    BookAuthorServiceGrpc.BookAuthorServiceBlockingStub synchronousClient;
+    UserServiceGrpc.UserServiceBlockingStub synchronousClient;
     //ovo zameni za user client koji ce milos ubaciti
 
     @GrpcClient("grpc-accommodation-service")
@@ -124,12 +124,12 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     @Override
     public void checkAvailability(ReservationReq request, StreamObserver<isAvailable> responseObserver) {
-        Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
+        // Author aut=synchronousClient.getAuthor(Author.newBuilder().setAuthorId(1).build());
         Boolean ret;
-        if(aut!=null)
+       // if(aut!=null)
             ret=true;
-        else
-            ret=false;
+        //else
+          //  ret=false;
             responseObserver.onNext(isAvailable.newBuilder().setAvailable(ret).build());
 
         responseObserver.onCompleted();
@@ -202,14 +202,14 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     public List<Pending> convertToPending(List<Reservation> reservations) {
         List<Pending> converted = new ArrayList<>();
         for (Reservation res : reservations) {
-            //int cancelcout=synchronousClient.getCancelCount(username)
+            CancelCountMsg cancelCount=synchronousClient.getCancelCount(UsernameMsg.newBuilder().setUsername(res.getUsername()).build());
             converted.add(Pending.newBuilder()
                     .setEndDate(res.getEndTime().toString())
                     .setStartDate(res.getStartTime().toString())
                     .setAccommodationId(res.getAccommodationId())
                     .setNumberOfGuests(res.getNumberOfPeople())
                     .setUsername(res.getUsername())
-                    .setCancelCount(10)
+                    .setCancelCount(cancelCount.getCancelCount())
                     .setId(res.getId())
                     .build());
         }

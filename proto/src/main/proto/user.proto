@@ -29,6 +29,12 @@ message UserTokenStateRes {
   string accessToken = 1;
   string role = 2;
 }
+message UsernameMsg {
+  string username = 1;
+}
+message CancelCountMsg {
+  int32 cancelCount = 1;
+}
 
 message LoginReq {
   string username = 1;
@@ -38,4 +44,5 @@ message LoginReq {
 service UserService {
     rpc register(UserReq) returns (Created){}
     rpc login(LoginReq) returns (UserTokenStateRes){}
+    rpc getCancelCount(UsernameMsg) returns (CancelCountMsg){}
 }

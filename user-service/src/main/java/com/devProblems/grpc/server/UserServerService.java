@@ -43,4 +43,17 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         }
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getCancelCount(UsernameMsg request, StreamObserver<CancelCountMsg> responseObserver) {
+        Optional<User> tempUser = repository.findById(request.getUsername());
+        if (!tempUser.isEmpty()) {
+            responseObserver.onNext(CancelCountMsg.newBuilder()
+                    .setCancelCount(tempUser.get().getCancelCount())
+                    .build());
+        } else {
+            responseObserver.onError(new Exception("username doesn't exist"));
+        }
+            responseObserver.onCompleted();
+    }
 }
