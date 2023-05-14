@@ -40,9 +40,13 @@ public class ReservationsController {
     public Boolean AcceptReservations(@PathVariable Long id){
         return reservationService.AcceptReservation(id);
     }
-    @GetMapping("/accommodation={accommodationId}")
+    @GetMapping("/pending/accommodation={accommodationId}")
     public List<PendingDTO> getReservationsPending(@PathVariable Long accommodationId){
         return reservationService.getAllPending(accommodationId);
+    }
+    @GetMapping("/accept/username={username}")
+    public List<PendingDTO> getReservationsAccepted(@PathVariable String username){
+        return reservationService.getAllAccepted(username);
     }
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){

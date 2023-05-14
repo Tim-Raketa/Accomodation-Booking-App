@@ -107,4 +107,10 @@ public class ReservationService {
         return newList;
     }
 
+    public List<PendingDTO> getAllAccepted(String username) {
+        UsernameReq Request= UsernameReq.newBuilder().setUsername(username).build();
+        allPending response= synchronousReservation.showAllAcceptedReservations(Request);
+        List<Pending> resp=response.getPendingList();
+        return convertPending(resp);
+    }
 }
