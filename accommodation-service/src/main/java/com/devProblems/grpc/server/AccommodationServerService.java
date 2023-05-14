@@ -85,6 +85,12 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     @Override
     public void updateRentableInterval(UpdateRentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
         RentableInterval rentableInterval = rentableIntervalRepository.findById(Long.valueOf(request.getId())).get();
+        isAvailable isAvailable = synchronousClient.isIntervalFree(isIntervalFreMsg.newBuilder()
+                .setAccommodationId(rentableInterval.getAccommodationId())
+                .setStartDate(rentableInterval.getStartTime().toString())
+                .setEndDate(rentableInterval.getEndTime().toString())
+                .build());
+
         rentableInterval.setAccommodationId(request.getAccommodationId());
         rentableInterval.setStartTime(LocalDate.parse(request.getStartTime()));
         rentableInterval.setEndTime(LocalDate.parse(request.getEndTime()));
@@ -95,11 +101,9 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rI->rI.getAccommodationId() == rentableInterval.getAccommodationId())
                 .filter(rI-> !(rI.getEndTime().isBefore(rentableInterval.getStartTime()) || rI.getStartTime().isAfter(rentableInterval.getStartTime()) )).toList();
 
-        isAvailable isAvailable = synchronousClient.isIntervalFree(isIntervalFreMsg.newBuilder().build());
 
-        if(!intervals.isEmpty() && !(isAvailable.getAvailable())){
-            responseObserver.onNext(RentableIntervalResp.newBuilder().build());
-        } else {
+
+        if(intervals.isEmpty() && (isAvailable.getAvailable())){
             rentableIntervalRepository.save(rentableInterval);
             responseObserver.onNext(
                     RentableIntervalResp.newBuilder()
@@ -112,6 +116,10 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                             .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
                             .build()
             );
+        }
+        else
+        {
+            responseObserver.onNext(RentableIntervalResp.newBuilder().build());
         }
         responseObserver.onCompleted();
     }
