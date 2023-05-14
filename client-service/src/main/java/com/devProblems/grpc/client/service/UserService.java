@@ -37,4 +37,13 @@ public class UserService {
         return new UserTokenState(response);
     }
 
+    public UserDTO getUser(String username) {
+        UserReq response = synchronousUser.getUser(
+                UserId.newBuilder()
+                        .setUsername(username)
+                        .build());
+
+        return new UserDTO(response);
+    }
+
 }

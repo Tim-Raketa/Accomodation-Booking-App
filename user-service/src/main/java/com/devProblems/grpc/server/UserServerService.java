@@ -43,4 +43,20 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         }
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getUser(UserId request, StreamObserver<UserReq> responseObserver) {
+        Optional<User> tempUser = repository.findById(request.getUsername());
+        responseObserver.onNext(
+                UserReq.newBuilder()
+                    .setUsername(tempUser.get().getUsername())
+                    .setPassword(tempUser.get().getPassword())
+                    .setName(tempUser.get().getName())
+                    .setSurname(tempUser.get().getSurname())
+                    .setEmail(tempUser.get().getEmail())
+                    .setResidency(tempUser.get().getResidency())
+                    .setType(tempUser.get().getType())
+                    .build());
+        responseObserver.onCompleted();
+    }
 }

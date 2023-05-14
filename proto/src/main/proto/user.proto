@@ -34,7 +34,12 @@ message LoginReq {
   string password = 2;
 }
 
+message UserId {
+  string username = 1;
+}
+
 service UserService {
     rpc register(UserReq) returns (Created){}
     rpc login(LoginReq) returns (UserTokenStateRes){}
+    rpc getUser(UserId) returns (UserReq){}
 }

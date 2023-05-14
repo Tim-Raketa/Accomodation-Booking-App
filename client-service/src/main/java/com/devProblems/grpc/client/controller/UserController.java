@@ -24,5 +24,6 @@ public class UserController {
     @PostMapping(value = "/login")
     public UserTokenState login(@RequestBody LoginDTO loginDTO) {return userService.login(loginDTO);}
 
-
+    @GetMapping(value = "/getUser/{username}")
+    public UserDTO getUser(@PathVariable String username) {return userService.getUser(username);}
 }
