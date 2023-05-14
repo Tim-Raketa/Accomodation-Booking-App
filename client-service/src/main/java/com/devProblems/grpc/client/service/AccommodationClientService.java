@@ -42,6 +42,21 @@ public class AccommodationClientService {
         return new RentableIntervalDTO(response);
     }
 
+    public RentableIntervalDTO updateRentableInterval(RentableIntervalDTO rentableInterval){
+        RentableIntervalResp response = synchronousAccommodation.updateRentableInterval(
+                UpdateRentableIntervalReq.newBuilder()
+                        .setId(rentableInterval.getId())
+                        .setAccommodationId(rentableInterval.getAccommodationId())
+                        .setStartTime(rentableInterval.getStartTime().toString())
+                        .setEndTime(rentableInterval.getEndTime().toString())
+                        .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
+                        .setPricePerGuest(rentableInterval.getPricePerGuest())
+                        .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
+                        .build()
+        );
+        return new RentableIntervalDTO(response);
+    }
+
     public List<AccommodationDTO> getAllAccommodations(){
         ListOfAccommodationResp emptyRequest = ListOfAccommodationResp.newBuilder().build();
         ListOfAccommodationResp response = synchronousAccommodation.getAllAccommodations(emptyRequest);

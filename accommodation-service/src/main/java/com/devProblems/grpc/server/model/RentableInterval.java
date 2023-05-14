@@ -1,6 +1,5 @@
 package com.devProblems.grpc.server.model;
 
-import com.devProblems.RentableIntervalReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class RentableInterval {
     @Column
     private Boolean automaticAcceptance;
 
-    public RentableInterval(RentableIntervalReq req){
+    public RentableInterval(com.devProblems.RentableIntervalReq req){
         this.accommodationId = req.getAccommodationId();
         this.startTime = LocalDate.parse(req.getStartTime());
         this.endTime = LocalDate.parse(req.getEndTime());

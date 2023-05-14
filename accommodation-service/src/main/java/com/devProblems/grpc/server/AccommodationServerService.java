@@ -72,6 +72,30 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     }
 
     @Override
+    public void updateRentableInterval(UpdateRentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
+        RentableInterval rentableInterval = rentableIntervalRepository.findById(Long.valueOf(request.getId())).get();
+        rentableInterval.setAccommodationId(request.getAccommodationId());
+        rentableInterval.setStartTime(LocalDate.parse(request.getStartTime()));
+        rentableInterval.setEndTime(LocalDate.parse(request.getEndTime()));
+        rentableInterval.setPriceOfAccommodation(request.getPriceOfAccommodation());
+        rentableInterval.setPricePerGuest(request.getPricePerGuest());
+        rentableInterval.setAutomaticAcceptance(request.getAutomaticAcceptance());
+        rentableIntervalRepository.save(rentableInterval);
+        responseObserver.onNext(
+                RentableIntervalResp.newBuilder()
+                        .setId(rentableInterval.getId())
+                        .setAccommodationId(rentableInterval.getAccommodationId())
+                        .setStartTime(rentableInterval.getStartTime().toString())
+                        .setEndTime(rentableInterval.getEndTime().toString())
+                        .setPriceOfAccommodation(rentableInterval.getPriceOfAccommodation())
+                        .setPricePerGuest(rentableInterval.getPricePerGuest())
+                        .setAutomaticAcceptance(rentableInterval.getAutomaticAcceptance())
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getRentableIntervalsByAccommodationId(AccommodationIdReq request, StreamObserver<ListOfRentableIntervalResp> responseObserver) {
         List<RentableInterval> rentableIntervals = rentableIntervalRepository.findAll().stream().filter(rentableInterval -> rentableInterval.getAccommodationId()==request.getId())
                 .toList();
