@@ -1,9 +1,9 @@
 package com.devProblems.grpc.client.service;
 
-import com.devProblems.Created;
-import com.devProblems.UserReq;
-import com.devProblems.UserServiceGrpc;
+import com.devProblems.*;
+import com.devProblems.grpc.client.DTO.LoginDTO;
 import com.devProblems.grpc.client.DTO.UserDTO;
+import com.devProblems.grpc.client.DTO.UserTokenState;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
@@ -27,4 +27,14 @@ public class UserService {
 
         return response.getCreated();
     }
+    public UserTokenState login(LoginDTO loginDTO) {
+        UserTokenStateRes response = synchronousUser.login(
+                LoginReq.newBuilder()
+                        .setUsername(loginDTO.getUsername())
+                        .setPassword(loginDTO.getPassword())
+                        .build());
+
+        return new UserTokenState(response);
+    }
+
 }
