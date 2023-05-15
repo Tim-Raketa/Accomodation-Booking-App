@@ -249,6 +249,18 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         return responses;
     }
 
+    @Override
+    public void deleteAccommodation(AccommodationIdReq request, StreamObserver<Automatic> responseObserver) {
+        Optional<Accommodation> deleted=accommodationRepository.findById(request.getId());
+        if(deleted.isEmpty())
+            responseObserver.onNext(Automatic.newBuilder().setAuto(false).build());
+        {
+            deleted.get().setDeleted(true);
+            accommodationRepository.save(deleted.get());
+            responseObserver.onNext(Automatic.newBuilder().setAuto(true).build());
+        }
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void getRentableIntervalById(RentableIntervalIdReq request, StreamObserver<RentableIntervalResp> responseObserver) {
