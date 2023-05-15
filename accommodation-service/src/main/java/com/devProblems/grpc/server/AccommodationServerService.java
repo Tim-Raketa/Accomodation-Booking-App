@@ -236,7 +236,8 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         responseObserver.onNext(ListOfSearchResp.newBuilder().addAllResponses(responses).build());
         responseObserver.onCompleted();
     }
-    public SearchResp conv (Accommodation accommodation,Float priceOfAccommodation,Float pricePerPerson,Integer numberOfGuests,Long days ){
+    public SearchResp conv (Accommodation accommodation,Float priceOfAccommodation,Float pricePerPerson
+            ,Integer numberOfGuests,Long days){
 
             return    (SearchResp.newBuilder()
                         .setAccommodationId(accommodation.getId())
@@ -245,7 +246,10 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                         .setPerks(accommodation.getPerks())
                         .setPriceOfAccommodation(priceOfAccommodation.longValue())
                         .setPricePerGuest(pricePerPerson.longValue())
-                        .setTotalPrice(days*pricePerPerson.longValue() + days*priceOfAccommodation.longValue())
+                        .setTotalPrice(days*pricePerPerson.longValue()*numberOfGuests + days*priceOfAccommodation.longValue())
+                        .setNumberOfGuests(numberOfGuests)
+                        .setMaxGuests(accommodation.getMaxGuests())
+                        .setMinGuests(accommodation.getMinGuests())
                         .build());
 
     }
