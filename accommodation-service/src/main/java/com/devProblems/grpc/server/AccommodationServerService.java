@@ -53,6 +53,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                         .setPerks(accommodation.getPerks())
                         .setMinGuests(accommodation.getMinGuests())
                         .setMaxGuests(accommodation.getMaxGuests())
+                        .setHostId(accommodation.getHostId())
                         .build()
         );
         responseObserver.onCompleted();
@@ -166,6 +167,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                     .setPerks(accommodation.getPerks())
                     .setMinGuests(accommodation.getMinGuests())
                     .setMaxGuests(accommodation.getMaxGuests())
+                    .setHostId(accommodation.getHostId())
                     .build());
         }
         return converted;
@@ -183,6 +185,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                             .setPerks(accommodation.get().getPerks())
                             .setMinGuests(accommodation.get().getMinGuests())
                             .setMaxGuests(accommodation.get().getMaxGuests())
+                            .setHostId(accommodation.get().getHostId())
                             .build()
             );
          else  responseObserver.onNext(

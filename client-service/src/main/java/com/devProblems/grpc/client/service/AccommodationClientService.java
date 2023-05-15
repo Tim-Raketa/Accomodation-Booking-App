@@ -23,6 +23,7 @@ public class AccommodationClientService {
                         .setPerks(accommodation.getPerks())
                         .setMinGuests(accommodation.getMinGuests())
                         .setMaxGuests(accommodation.getMaxGuests())
+                        .setHostId(accommodation.getHostId())
                         .build()
         );
         return new AccommodationDTO(response);

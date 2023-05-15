@@ -17,6 +17,7 @@ public class AccommodationDTO {
     String perks;
     Integer minGuests;
     Integer maxGuests;
+    String hostId;
 
     public AccommodationDTO(com.devProblems.AccommodationResp accommodation){
         this.id = accommodation.getId();
@@ -25,5 +26,6 @@ public class AccommodationDTO {
         this.perks = accommodation.getPerks();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
+        this.hostId = accommodation.getHostId();
     }
 }
