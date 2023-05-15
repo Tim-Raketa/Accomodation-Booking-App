@@ -25,6 +25,10 @@ public class AccommodationController {
     public AccommodationDTO getAccommodationById(@PathVariable Long id){
         return accommodationClientService.getById(id);
     }
+    @DeleteMapping (value = "/{id}")
+    public boolean deleteAccommodation(@PathVariable Long id){
+        return accommodationClientService.deleteAccommodation(id);
+    }
     @GetMapping("/")
     public List<AccommodationDTO> getAllAccommodations(){
         return accommodationClientService.getAllAccommodations();

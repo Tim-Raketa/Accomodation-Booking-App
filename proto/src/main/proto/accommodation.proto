@@ -111,5 +111,6 @@ service AccommodationService{
   rpc search(SearchReq)returns(ListOfSearchResp);
   rpc getRentableIntervalById(RentableIntervalIdReq) returns(RentableIntervalResp);
   rpc getAccommodationsByHostId(HostIdReq) returns(ListOfAccommodationResp);
+  rpc deleteAccommodation(AccommodationIdReq) returns(Automatic);
 
 }

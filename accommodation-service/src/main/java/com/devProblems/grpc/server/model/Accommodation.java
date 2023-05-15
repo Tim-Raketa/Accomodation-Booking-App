@@ -29,6 +29,8 @@ public class Accommodation {
     private Integer maxGuests;
     @Column
     private String hostId;
+    @Column
+    private Boolean Deleted;
 
     //private slike
 
@@ -39,6 +41,7 @@ public class Accommodation {
         this.minGuests = req.getMinGuests();
         this.maxGuests = req.getMaxGuests();
         this.hostId = req.getHostId();
+        this.Deleted=false;
     }
 
 }
