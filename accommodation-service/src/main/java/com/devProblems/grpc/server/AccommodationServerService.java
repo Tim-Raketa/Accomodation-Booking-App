@@ -54,6 +54,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                         .setPerks(accommodation.getPerks())
                         .setMinGuests(accommodation.getMinGuests())
                         .setMaxGuests(accommodation.getMaxGuests())
+                        .setHostId(accommodation.getHostId())
                         .build()
         );
         responseObserver.onCompleted();
@@ -157,6 +158,13 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void getAccommodationsByHostId(HostIdReq request, StreamObserver<ListOfAccommodationResp> responseObserver) {
+        List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId())).toList();
+        responseObserver.onNext(ListOfAccommodationResp.newBuilder().addAllAccommodations(convert(accommodations)).build());
+        responseObserver.onCompleted();
+    }
+
     public List<AccommodationResp> convert(List<Accommodation> accommodations){
         List<AccommodationResp> converted = new ArrayList<>();
         for(Accommodation accommodation : accommodations){
@@ -167,6 +175,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                     .setPerks(accommodation.getPerks())
                     .setMinGuests(accommodation.getMinGuests())
                     .setMaxGuests(accommodation.getMaxGuests())
+                    .setHostId(accommodation.getHostId())
                     .build());
         }
         return converted;
@@ -184,6 +193,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                             .setPerks(accommodation.get().getPerks())
                             .setMinGuests(accommodation.get().getMinGuests())
                             .setMaxGuests(accommodation.get().getMaxGuests())
+                            .setHostId(accommodation.get().getHostId())
                             .build()
             );
          else  responseObserver.onNext(
@@ -239,5 +249,26 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         return responses;
     }
 
+
+    @Override
+    public void getRentableIntervalById(RentableIntervalIdReq request, StreamObserver<RentableIntervalResp> responseObserver) {
+        Optional<RentableInterval> rentableInterval = rentableIntervalRepository.findById(request.getId());
+        if(rentableInterval.isPresent())
+            responseObserver.onNext(
+                    RentableIntervalResp.newBuilder()
+                            .setId(rentableInterval.get().getId())
+                            .setAccommodationId(rentableInterval.get().getAccommodationId())
+                            .setStartTime(rentableInterval.get().getStartTime().toString())
+                            .setEndTime(rentableInterval.get().getEndTime().toString())
+                            .setPriceOfAccommodation(rentableInterval.get().getPriceOfAccommodation())
+                            .setPricePerGuest(rentableInterval.get().getPricePerGuest())
+                            .setAutomaticAcceptance(rentableInterval.get().getAutomaticAcceptance())
+                            .build()
+            );
+        else responseObserver.onNext(
+                RentableIntervalResp.newBuilder().build()
+        );
+        responseObserver.onCompleted();
+    }
 
 }

@@ -25,6 +25,7 @@ public class AccommodationClientService {
                         .setPerks(accommodation.getPerks())
                         .setMinGuests(accommodation.getMinGuests())
                         .setMaxGuests(accommodation.getMaxGuests())
+                        .setHostId(accommodation.getHostId())
                         .build()
         );
         return new AccommodationDTO(response);
@@ -66,6 +67,13 @@ public class AccommodationClientService {
         return convert(resp);
     }
 
+    public List<AccommodationDTO> getAccommodationsByHostId(String hostId){
+        HostIdReq request = HostIdReq.newBuilder().setHostId(hostId).build();
+        ListOfAccommodationResp response = synchronousAccommodation.getAccommodationsByHostId(request);
+        List<AccommodationResp> resp = response.getAccommodationsList();
+        return convert(resp);
+    }
+
     public List<AccommodationDTO> convert(List<AccommodationResp> accommodations){
         List<AccommodationDTO> newList = new ArrayList<>();
         for(AccommodationResp resp : accommodations){
@@ -95,6 +103,7 @@ public class AccommodationClientService {
         return new AccommodationDTO(response);
     }
 
+
     public List<SearchResultDTO> search(SearchRequestDTO searchReq) {
         SearchReq request=SearchReq.newBuilder().setStartDate(searchReq.getStartDate()).setEndDate(searchReq.getEndDate())
                 .setLocation(searchReq.getLocation()).setNumberOfGuests(searchReq.getNumberOfGuests()).build();
@@ -109,6 +118,13 @@ public class AccommodationClientService {
             results.add(new SearchResultDTO(req));
         }
         return results;
+    }
+
+
+    public RentableIntervalDTO getRentableIntervalById(Long id){
+        RentableIntervalIdReq request = RentableIntervalIdReq.newBuilder().setId(id).build();
+        RentableIntervalResp response = synchronousAccommodation.getRentableIntervalById(request);
+        return new RentableIntervalDTO(response);
     }
 
 }
