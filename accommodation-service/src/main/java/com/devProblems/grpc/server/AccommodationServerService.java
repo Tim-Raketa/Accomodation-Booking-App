@@ -153,14 +153,14 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     @Override
     public void getAllAccommodations(ListOfAccommodationResp request, StreamObserver<ListOfAccommodationResp> responseObserver) {
         ListOfAccommodationResp accommodations = ListOfAccommodationResp.newBuilder()
-                .addAllAccommodations(convert(accommodationRepository.findAll())).build();
+                .addAllAccommodations(convert(accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getDeleted()==false).toList())).build();
         responseObserver.onNext(accommodations);
         responseObserver.onCompleted();
     }
 
     @Override
     public void getAccommodationsByHostId(HostIdReq request, StreamObserver<ListOfAccommodationResp> responseObserver) {
-        List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId())).toList();
+        List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId()) &&accommodation.getDeleted()==false).toList();
         responseObserver.onNext(ListOfAccommodationResp.newBuilder().addAllAccommodations(convert(accommodations)).build());
         responseObserver.onCompleted();
     }
@@ -184,7 +184,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     @Override
     public void getById(AccommodationIdReq request, StreamObserver<AccommodationResp> responseObserver) {
         Optional<Accommodation> accommodation=accommodationRepository.findById(request.getId());
-        if(accommodation.isPresent())
+        if(accommodation.isPresent() && accommodation.get().getDeleted()==false)
             responseObserver.onNext(
                     AccommodationResp.newBuilder()
                             .setId(accommodation.get().getId())
@@ -207,7 +207,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         List<Accommodation> response=new ArrayList<>();
         //radi se search za sve osim termina
         List<Accommodation> accomodations=accommodationRepository.findAll().stream()
-                .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()))
+                .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()) && accommodation.getDeleted()==false)
                 .filter(accommodation -> accommodation.getMaxGuests()>request.getNumberOfGuests()
                         && request.getNumberOfGuests()>accommodation.getMinGuests())
                 .toList()
@@ -249,6 +249,19 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         return responses;
     }
 
+    @Override
+    public void deleteAccommodation(AccommodationIdReq request, StreamObserver<Automatic> responseObserver) {
+        Optional<Accommodation> deleted=accommodationRepository.findById(request.getId());
+        if(deleted.isEmpty()||deleted.get().getDeleted()==true)
+            responseObserver.onNext(Automatic.newBuilder().setAuto(false).build());
+        else
+        {
+            deleted.get().setDeleted(true);
+            accommodationRepository.save(deleted.get());
+            responseObserver.onNext(Automatic.newBuilder().setAuto(true).build());
+        }
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void getRentableIntervalById(RentableIntervalIdReq request, StreamObserver<RentableIntervalResp> responseObserver) {

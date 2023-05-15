@@ -127,4 +127,9 @@ public class AccommodationClientService {
         return new RentableIntervalDTO(response);
     }
 
+    public boolean deleteAccommodation(Long id) {
+        AccommodationIdReq request = AccommodationIdReq.newBuilder().setId(id).build();
+        Automatic response=synchronousAccommodation.deleteAccommodation(request);
+        return response.getAuto();
+    }
 }
