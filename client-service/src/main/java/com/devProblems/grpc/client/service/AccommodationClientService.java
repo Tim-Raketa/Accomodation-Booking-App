@@ -3,6 +3,8 @@ package com.devProblems.grpc.client.service;
 import com.devProblems.*;
 import com.devProblems.grpc.client.DTO.AccommodationDTO;
 import com.devProblems.grpc.client.DTO.RentableIntervalDTO;
+import com.devProblems.grpc.client.DTO.SearchRequestDTO;
+import com.devProblems.grpc.client.DTO.SearchResultDTO;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
@@ -101,9 +103,28 @@ public class AccommodationClientService {
         return new AccommodationDTO(response);
     }
 
+
+    public List<SearchResultDTO> search(SearchRequestDTO searchReq) {
+        SearchReq request=SearchReq.newBuilder().setStartDate(searchReq.getStartDate()).setEndDate(searchReq.getEndDate())
+                .setLocation(searchReq.getLocation()).setNumberOfGuests(searchReq.getNumberOfGuests()).build();
+        ListOfSearchResp response=synchronousAccommodation.search(request);
+        List<SearchResp> list=response.getResponsesList();
+        return convertForSearch(list);
+    }
+    public List<SearchResultDTO> convertForSearch(List<SearchResp> requests){
+        List<SearchResultDTO> results=new ArrayList<>();
+        for (SearchResp req:requests
+             ) {
+            results.add(new SearchResultDTO(req));
+        }
+        return results;
+    }
+
+
     public RentableIntervalDTO getRentableIntervalById(Long id){
         RentableIntervalIdReq request = RentableIntervalIdReq.newBuilder().setId(id).build();
         RentableIntervalResp response = synchronousAccommodation.getRentableIntervalById(request);
         return new RentableIntervalDTO(response);
     }
+
 }

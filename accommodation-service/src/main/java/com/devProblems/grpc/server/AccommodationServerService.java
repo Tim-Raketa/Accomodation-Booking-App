@@ -11,6 +11,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -202,6 +203,54 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     }
 
     @Override
+    public void search(SearchReq request, StreamObserver<ListOfSearchResp> responseObserver) {
+        List<Accommodation> response=new ArrayList<>();
+        //radi se search za sve osim termina
+        List<Accommodation> accomodations=accommodationRepository.findAll().stream()
+                .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()))
+                .filter(accommodation -> accommodation.getMaxGuests()>request.getNumberOfGuests()
+                        && request.getNumberOfGuests()>accommodation.getMinGuests())
+                .toList()
+                ;
+        response.addAll(accomodations);
+        for (var acc:accomodations) {
+
+            Optional<RentableInterval> Interval=rentableIntervalRepository.findAll().stream()
+                    .filter(interval-> interval.getAccommodationId()==acc.getId())
+                    .filter(interval-> interval.getStartTime().isBefore(LocalDate.parse(request.getStartDate()))
+                            &&interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()))
+                    ).findFirst();
+
+           if(Interval.isEmpty()) response.remove(acc);
+            else {
+               Boolean isAvailable = synchronousClient.isIntervalFree(isIntervalFreMsg.newBuilder()
+                       .setAccommodationId(Interval.get().getAccommodationId())
+                       .setStartDate(request.getStartDate())
+                       .setEndDate(request.getEndDate())
+                       .build()).getAvailable();
+               if (!isAvailable)
+                   response.remove(acc);
+           }
+        }
+        responseObserver.onNext(ListOfSearchResp.newBuilder().addAllResponses(conv(response)).build());
+        responseObserver.onCompleted();
+    }
+    public List<SearchResp> conv (List<Accommodation> accommodations){
+        List<SearchResp> responses=new ArrayList<>();
+        for (var acc:accommodations
+             ) {
+                responses.add(SearchResp.newBuilder()
+                        .setAccommodationId(acc.getId())
+                        .setName(acc.getName())
+                        .setLocation(acc.getLocation())
+                        .setPerks(acc.getPerks())
+                        .build());
+        }
+        return responses;
+    }
+
+
+    @Override
     public void getRentableIntervalById(RentableIntervalIdReq request, StreamObserver<RentableIntervalResp> responseObserver) {
         Optional<RentableInterval> rentableInterval = rentableIntervalRepository.findById(request.getId());
         if(rentableInterval.isPresent())
@@ -221,4 +270,5 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         );
         responseObserver.onCompleted();
     }
+
 }
