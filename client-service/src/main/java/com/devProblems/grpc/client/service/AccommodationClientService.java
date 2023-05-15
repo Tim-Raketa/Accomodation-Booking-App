@@ -65,6 +65,13 @@ public class AccommodationClientService {
         return convert(resp);
     }
 
+    public List<AccommodationDTO> getAccommodationsByHostId(String hostId){
+        HostIdReq request = HostIdReq.newBuilder().setHostId(hostId).build();
+        ListOfAccommodationResp response = synchronousAccommodation.getAccommodationsByHostId(request);
+        List<AccommodationResp> resp = response.getAccommodationsList();
+        return convert(resp);
+    }
+
     public List<AccommodationDTO> convert(List<AccommodationResp> accommodations){
         List<AccommodationDTO> newList = new ArrayList<>();
         for(AccommodationResp resp : accommodations){
