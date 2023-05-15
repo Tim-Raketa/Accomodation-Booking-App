@@ -10,6 +10,7 @@ message AccommodationReq{
   string perks = 3;
   int32 minGuests = 4;
   int32 maxGuests = 5;
+  string hostId = 6;
 }
 
 message AccommodationResp{
@@ -19,6 +20,7 @@ message AccommodationResp{
   string perks = 4;
   int32 minGuests = 5;
   int32 maxGuests = 6;
+  string hostId = 7;
 }
 
 message ListOfAccommodationResp{
