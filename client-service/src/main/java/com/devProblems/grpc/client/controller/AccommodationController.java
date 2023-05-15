@@ -45,7 +45,7 @@ public class AccommodationController {
         return accommodationClientService.getRentableIntervalsByAccommodationId(accommodationId);
     }
     @PostMapping("/search")
-    public SearchResultDTO search(@RequestBody SearchRequestDTO searchReq){
+    public List<SearchResultDTO> search(@RequestBody SearchRequestDTO searchReq){
         return accommodationClientService.search(searchReq);
     }
 }

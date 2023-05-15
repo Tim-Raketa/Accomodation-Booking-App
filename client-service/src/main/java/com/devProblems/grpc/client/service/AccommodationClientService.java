@@ -95,10 +95,20 @@ public class AccommodationClientService {
         return new AccommodationDTO(response);
     }
 
-    public SearchResultDTO search(SearchRequestDTO searchReq) {
+    public List<SearchResultDTO> search(SearchRequestDTO searchReq) {
         SearchReq request=SearchReq.newBuilder().setStartDate(searchReq.getStartDate()).setEndDate(searchReq.getEndDate())
                 .setLocation(searchReq.getLocation()).setNumberOfGuests(searchReq.getNumberOfGuests()).build();
-        SearchResp response=synchronousAccommodation.search(request);
-        return new SearchResultDTO(response);
+        ListOfSearchResp response=synchronousAccommodation.search(request);
+        List<SearchResp> list=response.getResponsesList();
+        return convertForSearch(list);
     }
+    public List<SearchResultDTO> convertForSearch(List<SearchResp> requests){
+        List<SearchResultDTO> results=new ArrayList<>();
+        for (SearchResp req:requests
+             ) {
+            results.add(new SearchResultDTO(req));
+        }
+        return results;
+    }
+
 }

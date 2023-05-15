@@ -190,4 +190,31 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
          responseObserver.onCompleted();
 
     }
+
+    @Override
+    public void search(SearchReq request, StreamObserver<ListOfSearchResp> responseObserver) {
+
+        List<Accommodation> accomodations=accommodationRepository.findAll().stream()
+                .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()))
+                .filter(accommodation -> accommodation.getMaxGuests()>request.getNumberOfGuests()
+                        && request.getNumberOfGuests()>accommodation.getMinGuests())
+                .toList();
+        responseObserver.onNext(ListOfSearchResp.newBuilder().addAllResponses(conv(accomodations)).build());
+        responseObserver.onCompleted();
+    }
+    public List<SearchResp> conv (List<Accommodation> accommodations){
+        List<SearchResp> responses=new ArrayList<>();
+        for (var acc:accommodations
+             ) {
+                responses.add(SearchResp.newBuilder()
+                        .setAccommodationId(acc.getId())
+                        .setName(acc.getName())
+                        .setLocation(acc.getLocation())
+                        .setPerks(acc.getPerks())
+                        .build());
+        }
+        return responses;
+    }
+
+
 }
