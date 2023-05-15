@@ -157,6 +157,13 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void getAccommodationsByHostId(HostIdReq request, StreamObserver<ListOfAccommodationResp> responseObserver) {
+        List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId())).toList();
+        responseObserver.onNext(ListOfAccommodationResp.newBuilder().addAllAccommodations(convert(accommodations)).build());
+        responseObserver.onCompleted();
+    }
+
     public List<AccommodationResp> convert(List<Accommodation> accommodations){
         List<AccommodationResp> converted = new ArrayList<>();
         for(Accommodation accommodation : accommodations){

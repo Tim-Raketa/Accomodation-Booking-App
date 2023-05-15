@@ -78,6 +78,10 @@ message ListOfRentableIntervalResp{
   repeated RentableIntervalResp rentableIntervals = 1;
 }
 
+message HostIdReq{
+  string hostId = 1;
+}
+
 service AccommodationService{
   rpc createAccommodation(AccommodationReq) returns (AccommodationResp);
   rpc getById(AccommodationIdReq) returns(AccommodationResp);
@@ -87,4 +91,5 @@ service AccommodationService{
   rpc getRentableIntervalsByAccommodationId(AccommodationIdReq) returns(ListOfRentableIntervalResp);
   rpc updateRentableInterval(UpdateRentableIntervalReq) returns(RentableIntervalResp);
   rpc getRentableIntervalById(RentableIntervalIdReq) returns(RentableIntervalResp);
+  rpc getAccommodationsByHostId(HostIdReq) returns(ListOfAccommodationResp);
 }

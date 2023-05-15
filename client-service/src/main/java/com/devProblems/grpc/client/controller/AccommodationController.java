@@ -28,6 +28,11 @@ public class AccommodationController {
         return accommodationClientService.getAllAccommodations();
     }
 
+    @GetMapping("/host/{hostId}")
+    public List<AccommodationDTO> getAccommodationsByHostId(@PathVariable String hostId){
+        return accommodationClientService.getAccommodationsByHostId(hostId);
+    }
+
     @GetMapping(value = "/getRentableInterval/{id}")
     public RentableIntervalDTO getRentableIntervalById(@PathVariable Long id){
         return accommodationClientService.getRentableIntervalById(id);
