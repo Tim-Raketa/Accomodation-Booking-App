@@ -100,7 +100,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         rentableInterval.setPricePerGuest(request.getPricePerGuest());
         rentableInterval.setAutomaticAcceptance(request.getAutomaticAcceptance());
 
-        List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rI->rI.getAccommodationId() == rentableInterval.getAccommodationId())
+        List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rI->rI.getAccommodationId() == rentableInterval.getAccommodationId() && rI.getId()!=rentableInterval.getId())
                 .filter(rI-> !(rI.getEndTime().isBefore(rentableInterval.getStartTime()) || rI.getStartTime().isAfter(rentableInterval.getEndTime()) )).toList();
 
 
