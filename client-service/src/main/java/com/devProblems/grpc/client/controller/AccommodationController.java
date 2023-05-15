@@ -20,12 +20,17 @@ public class AccommodationController {
         return accommodationClientService.createAccommodation(accommodation);
     }
     @GetMapping(value = "/{id}")
-    public AccommodationDTO createAccommodation(@PathVariable Long id){
+    public AccommodationDTO getAccommodationById(@PathVariable Long id){
         return accommodationClientService.getById(id);
     }
     @GetMapping("/")
     public List<AccommodationDTO> getAllAccommodations(){
         return accommodationClientService.getAllAccommodations();
+    }
+
+    @GetMapping(value = "/getRentableInterval/{id}")
+    public RentableIntervalDTO getRentableIntervalById(@PathVariable Long id){
+        return accommodationClientService.getRentableIntervalById(id);
     }
 
     @PostMapping(value = "/createRentableInterval")

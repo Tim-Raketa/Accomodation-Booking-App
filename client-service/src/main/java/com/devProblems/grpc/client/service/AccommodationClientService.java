@@ -92,4 +92,10 @@ public class AccommodationClientService {
         AccommodationResp response = synchronousAccommodation.getById(request);
         return new AccommodationDTO(response);
     }
+
+    public RentableIntervalDTO getRentableIntervalById(Long id){
+        RentableIntervalIdReq request = RentableIntervalIdReq.newBuilder().setId(id).build();
+        RentableIntervalResp response = synchronousAccommodation.getRentableIntervalById(request);
+        return new RentableIntervalDTO(response);
+    }
 }
