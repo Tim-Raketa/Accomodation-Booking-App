@@ -64,7 +64,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     public void createRentableInterval(RentableIntervalReq request, StreamObserver<RentableIntervalResp> responseObserver) {
         RentableInterval interval = new RentableInterval(request);
         List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rentableInterval->rentableInterval.getAccommodationId() == interval.getAccommodationId())
-                .filter(rentableInterval-> !(rentableInterval.getEndTime().isBefore(interval.getStartTime()) || rentableInterval.getStartTime().isAfter(interval.getStartTime()) )).toList();
+                .filter(rentableInterval-> !(rentableInterval.getEndTime().isBefore(interval.getStartTime()) || rentableInterval.getStartTime().isAfter(interval.getEndTime()) )).toList();
         if(!intervals.isEmpty()){
             responseObserver.onNext(RentableIntervalResp.newBuilder().build());
         } else {
@@ -101,7 +101,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         rentableInterval.setAutomaticAcceptance(request.getAutomaticAcceptance());
 
         List<RentableInterval> intervals = rentableIntervalRepository.findAll().stream().filter(rI->rI.getAccommodationId() == rentableInterval.getAccommodationId())
-                .filter(rI-> !(rI.getEndTime().isBefore(rentableInterval.getStartTime()) || rI.getStartTime().isAfter(rentableInterval.getStartTime()) )).toList();
+                .filter(rI-> !(rI.getEndTime().isBefore(rentableInterval.getStartTime()) || rI.getStartTime().isAfter(rentableInterval.getEndTime()) )).toList();
 
 
 
