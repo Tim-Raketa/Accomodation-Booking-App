@@ -252,8 +252,9 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     @Override
     public void deleteAccommodation(AccommodationIdReq request, StreamObserver<Automatic> responseObserver) {
         Optional<Accommodation> deleted=accommodationRepository.findById(request.getId());
-        if(deleted.isEmpty())
+        if(deleted.isEmpty()||deleted.get().getDeleted()==true)
             responseObserver.onNext(Automatic.newBuilder().setAuto(false).build());
+        else
         {
             deleted.get().setDeleted(true);
             accommodationRepository.save(deleted.get());
