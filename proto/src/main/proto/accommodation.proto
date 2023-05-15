@@ -77,6 +77,9 @@ message SearchResp{
   int64 totalPrice=5;
   int64 priceOfAccommodation=6;
   int64 pricePerGuest=7;
+  int32 numberOfGuests=8;
+  int32 minGuests=9;
+  int32 maxGuests=10;
 }
 message SearchReq{
   int32 numberOfGuests=1;

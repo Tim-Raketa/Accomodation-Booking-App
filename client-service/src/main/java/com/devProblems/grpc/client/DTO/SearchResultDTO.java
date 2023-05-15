@@ -18,6 +18,10 @@ public class SearchResultDTO {
     private Float totalPrice;
     private Float priceOfAccommodation;
     private Float pricePerGuest;
+    private Integer numberOfGuests;
+    private Integer minGuests;
+    private Integer maxGuests;
+
 
     public SearchResultDTO(SearchResp response) {
         this.accommodationId = response.getAccommodationId();
@@ -27,6 +31,9 @@ public class SearchResultDTO {
         this.totalPrice = Float.valueOf(response.getTotalPrice());
         this.priceOfAccommodation = Float.valueOf(response.getPriceOfAccommodation());
         this.pricePerGuest = Float.valueOf(response.getPricePerGuest());
+        this.numberOfGuests= response.getNumberOfGuests();
+        this.minGuests=response.getMinGuests();
+        this.maxGuests=response.getMaxGuests();
     }
 
 }
