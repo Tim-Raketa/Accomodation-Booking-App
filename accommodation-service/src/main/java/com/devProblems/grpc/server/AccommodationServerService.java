@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -204,7 +205,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
 
     @Override
     public void search(SearchReq request, StreamObserver<ListOfSearchResp> responseObserver) {
-        List<Accommodation> response=new ArrayList<>();
+        List<SearchResp> responses=new ArrayList<>();
         //radi se search za sve osim termina
         List<Accommodation> accomodations=accommodationRepository.findAll().stream()
                 .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()) && accommodation.getDeleted()==false)
@@ -212,7 +213,6 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                         && request.getNumberOfGuests()>accommodation.getMinGuests())
                 .toList()
                 ;
-        response.addAll(accomodations);
         for (var acc:accomodations) {
 
             Optional<RentableInterval> Interval=rentableIntervalRepository.findAll().stream()
@@ -221,32 +221,33 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                             &&interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()))
                     ).findFirst();
 
-           if(Interval.isEmpty()) response.remove(acc);
-            else {
+           if(Interval.isPresent()) {
                Boolean isAvailable = synchronousClient.isIntervalFree(isIntervalFreMsg.newBuilder()
                        .setAccommodationId(Interval.get().getAccommodationId())
                        .setStartDate(request.getStartDate())
                        .setEndDate(request.getEndDate())
                        .build()).getAvailable();
-               if (!isAvailable)
-                   response.remove(acc);
+              Long days= ChronoUnit.DAYS.between( LocalDate.parse(request.getStartDate()),LocalDate.parse(request.getEndDate()));
+               if (isAvailable)
+                   responses.add(conv(acc,Interval.get().getPriceOfAccommodation(),Interval.get().getPricePerGuest()
+                           ,request.getNumberOfGuests(),days));
            }
         }
-        responseObserver.onNext(ListOfSearchResp.newBuilder().addAllResponses(conv(response)).build());
+        responseObserver.onNext(ListOfSearchResp.newBuilder().addAllResponses(responses).build());
         responseObserver.onCompleted();
     }
-    public List<SearchResp> conv (List<Accommodation> accommodations){
-        List<SearchResp> responses=new ArrayList<>();
-        for (var acc:accommodations
-             ) {
-                responses.add(SearchResp.newBuilder()
-                        .setAccommodationId(acc.getId())
-                        .setName(acc.getName())
-                        .setLocation(acc.getLocation())
-                        .setPerks(acc.getPerks())
+    public SearchResp conv (Accommodation accommodation,Float priceOfAccommodation,Float pricePerPerson,Integer numberOfGuests,Long days ){
+
+            return    (SearchResp.newBuilder()
+                        .setAccommodationId(accommodation.getId())
+                        .setName(accommodation.getName())
+                        .setLocation(accommodation.getLocation())
+                        .setPerks(accommodation.getPerks())
+                        .setPriceOfAccommodation(priceOfAccommodation.longValue())
+                        .setPricePerGuest(pricePerPerson.longValue())
+                        .setTotalPrice(days*pricePerPerson.longValue() + days*priceOfAccommodation.longValue())
                         .build());
-        }
-        return responses;
+
     }
 
     @Override
