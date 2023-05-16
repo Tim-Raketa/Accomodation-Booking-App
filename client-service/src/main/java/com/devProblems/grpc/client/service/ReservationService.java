@@ -87,6 +87,13 @@ public class ReservationService {
                         .build());
         return response.getAvailable();
     }
+    public List<PendingDTO> getAllPending(String username) {
+        UsernameReq Request= UsernameReq.newBuilder().setUsername(username).build();
+        allPending response= synchronousReservation.getAllPendingReservationsUser(Request);
+        List<Pending> resp=response.getPendingList();
+        return convertPending(resp);
+    }
+
 
     public Boolean isAvailable(CreateReservationDTO res) {
         isAvailable response= synchronousReservation.checkAvailability(

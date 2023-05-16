@@ -113,7 +113,6 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         }
         reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DECLINED);
         repository.save(reservation);
-        synchronousClient.increaseCancelCount(UsernameMsg.newBuilder().setUsername(reservation.getUsername()).build());
 
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
@@ -223,6 +222,16 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 .filter(reservation -> reservation.getStartTime().isAfter(LocalDate.now()))
                 .toList();
 
+        responseObserver.onNext(allPending.newBuilder().addAllPending(convertToPending(reservations)).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAllPendingReservationsUser(UsernameReq request, StreamObserver<allPending> responseObserver) {
+        List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getUsername().equals(request.getUsername()))
+                .filter(reservation -> reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
+                .filter(reservation -> reservation.getStartTime().isAfter(LocalDate.now()))
+                .toList();
         responseObserver.onNext(allPending.newBuilder().addAllPending(convertToPending(reservations)).build());
         responseObserver.onCompleted();
     }
