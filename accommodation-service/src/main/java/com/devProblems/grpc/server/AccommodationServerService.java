@@ -30,7 +30,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
 
     @Override
     public void isAutomatic(AccommodationAvailable request, StreamObserver<Automatic> responseObserver) {
-        RentableInterval interval=
+        Optional<RentableInterval> interval=
                 rentableIntervalRepository.findAll().stream().filter(interval1-> interval1.getAccommodationId()==request.getId()
                         &&
                         (interval1.getStartTime()
@@ -38,8 +38,11 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
                                         (LocalDate.parse(request.getStartDate()))
                                 &&(interval1.getEndTime() .isAfter(LocalDate.parse(request.getEndDate()))
                         ))
-                ).findFirst().get();
-        responseObserver.onNext(Automatic.newBuilder().setAuto(interval.getAutomaticAcceptance()).build());
+                ).findFirst();
+        if(interval.isEmpty())
+            responseObserver.onNext(Automatic.newBuilder().build());
+        else
+            responseObserver.onNext(Automatic.newBuilder().setAuto(interval.get().getAutomaticAcceptance()).build());
         responseObserver.onCompleted();
     }
 
