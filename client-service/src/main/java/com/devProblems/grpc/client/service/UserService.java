@@ -68,6 +68,6 @@ public class UserService {
         Created response =synchronousUser.deleteUser(UserId.newBuilder()
                 .setUsername(username).build());
 
-        return response;
+        return response.getCreated();
     }
 }
