@@ -32,4 +32,8 @@ public class UserController {
     public UserTokenState edit(@RequestBody EditDTO editDTO){
         return userService.edit(editDTO);
     }
+    @DeleteMapping(value = "/{username}")
+    public Boolean delete(@PathVariable String username){
+        return userService.delete(username);
+    }
 }

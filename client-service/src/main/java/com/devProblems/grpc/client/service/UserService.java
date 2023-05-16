@@ -64,4 +64,10 @@ public class UserService {
         return new UserTokenState(response);
     }
 
+    public Boolean delete(String username) {
+        Created response =synchronousUser.deleteUser(UserId.newBuilder()
+                .setUsername(username).build());
+
+        return response;
+    }
 }
