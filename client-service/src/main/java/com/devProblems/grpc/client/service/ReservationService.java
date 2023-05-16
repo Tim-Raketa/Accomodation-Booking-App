@@ -80,6 +80,13 @@ public class ReservationService {
         return response.getAvailable();
 
     }
+    public Boolean DenyReservation(Long id) {
+        isAvailable response= synchronousReservation.declineReservation(
+                AccommodationId.newBuilder()
+                        .setId(id)
+                        .build());
+        return response.getAvailable();
+    }
 
     public Boolean isAvailable(CreateReservationDTO res) {
         isAvailable response= synchronousReservation.checkAvailability(
@@ -113,4 +120,6 @@ public class ReservationService {
         List<Pending> resp=response.getPendingList();
         return convertPending(resp);
     }
+
+
 }

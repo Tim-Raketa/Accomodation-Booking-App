@@ -94,6 +94,33 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();    
     }
+
+    @Override
+    public void declineReservation(AccommodationId request, StreamObserver<isAvailable> responseObserver) {
+        Reservation reservation;
+
+        try{reservation=repository.findById(Long.valueOf(request.getId())).get();}
+        catch (Exception e ){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        if(reservation.getStatus()!=ReservationStatus.RESERVATION_STATUS_PENDING
+                || reservation.getStartTime().isBefore(LocalDate.now().plusDays(1))){
+            responseObserver.onNext(isAvailable.newBuilder().setAvailable(false).build());
+            responseObserver.onCompleted();
+            return;
+        }
+        reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DECLINED);
+        repository.save(reservation);
+        synchronousClient.increaseCancelCount(UsernameMsg.newBuilder().setUsername(reservation.getUsername()).build());
+
+        responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        responseObserver.onCompleted();
+    }
+
+
+
     @Override
     public void cancelReservation(AccommodationId request, StreamObserver<isAvailable> responseObserver) {
         Reservation reservation;

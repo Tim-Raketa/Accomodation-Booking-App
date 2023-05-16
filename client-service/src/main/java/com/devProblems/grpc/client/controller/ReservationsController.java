@@ -32,6 +32,10 @@ public class ReservationsController {
     public Boolean DeleteReservations(@PathVariable Long id){
         return reservationService.DeleteReservation(id);
     }
+    @DeleteMapping(value = "/deny/{id}")
+    public Boolean DenyReservations(@PathVariable Long id){
+        return reservationService.DenyReservation(id);
+    }
     @PutMapping(value = "/cancel/{id}")
     public Boolean CancelReservations(@PathVariable Long id){
         return reservationService.CancelReservation(id);

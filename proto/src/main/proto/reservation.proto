@@ -84,4 +84,5 @@ service ReservationService {
   rpc ShowAllPendingReservations(AccommodationId) returns(allPending);
   rpc IsIntervalFree(isIntervalFreMsg) returns (isAvailable);
   rpc ShowAllAcceptedReservations(UsernameReq) returns(allPending);
+  rpc DeclineReservation(AccommodationId) returns(isAvailable);
 }
