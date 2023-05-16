@@ -281,6 +281,12 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     }
 
-
-
+    @Override
+    public void deleteAllForAccommodation(AccommodationId request, StreamObserver<isAvailable> responseObserver) {
+        List<Reservation> toDelete=repository.findAll().stream().filter(reservation -> reservation.getAccommodationId()==request.getId()).toList();
+        toDelete.forEach(reservation -> reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
+        repository.saveAll(toDelete);
+        responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        responseObserver.onCompleted();
+    }
 }

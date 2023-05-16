@@ -87,4 +87,5 @@ service ReservationService {
   rpc DeclineReservation(AccommodationId) returns(isAvailable);
   rpc getAllPendingReservationsUser(UsernameReq) returns(allPending);
   rpc showAllAcceptedReservationsAccommodation(AccommodationId) returns(allPending);
+  rpc deleteAllForAccommodation(AccommodationId) returns(isAvailable);
 }

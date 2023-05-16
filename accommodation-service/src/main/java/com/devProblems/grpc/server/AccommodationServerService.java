@@ -265,6 +265,7 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         else
         {
             deleted.get().setDeleted(true);
+            synchronousClient.deleteAllForAccommodation(AccommodationId.newBuilder().setId(request.getId()).build());
             accommodationRepository.save(deleted.get());
             responseObserver.onNext(Automatic.newBuilder().setAuto(true).build());
         }
