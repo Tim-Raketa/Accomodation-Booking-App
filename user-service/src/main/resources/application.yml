@@ -1,6 +1,13 @@
 grpc:
   server:
     port: 9002
+  client:
+    grpc-reservation-service:
+      address: static://localhost:9001
+      negotiationType: plaintext
+    grpc-accommodation-service:
+      address: static://localhost:9003
+      negotiationType: plaintext
 spring:
   data:
     mongodb:

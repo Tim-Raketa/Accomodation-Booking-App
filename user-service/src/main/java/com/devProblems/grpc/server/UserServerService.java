@@ -3,16 +3,22 @@ package com.devProblems.grpc.server;
 import com.devProblems.*;
 import com.devProblems.grpc.server.repository.UserRepository;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.devProblems.grpc.server.model.User;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @GrpcService
 public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     @Autowired
     UserRepository repository;
+    @GrpcClient("grpc-reservation-service")
+    ReservationServiceGrpc.ReservationServiceBlockingStub synchronousReservation;
+    @GrpcClient("grpc-accommodation-service")
+    AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousAccommodation;
 
     @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
@@ -106,6 +112,43 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             tempUser.setCancelCount(tempUser.getCancelCount()+1);
             repository.save(tempUser);
             responseObserver.onNext(CancelCountMsg.newBuilder().setCancelCount(tempUser.getCancelCount()).build());
+            responseObserver.onCompleted();
+    }
+
+    @Override
+    public void deleteUser(UserId request, StreamObserver<Created> responseObserver) {
+            User user = repository.findById(request.getUsername()).get();
+            if(user.getType()==UserType.GUEST)
+            {
+                allPending accepted=synchronousReservation.showAllAcceptedReservations
+                        (UsernameReq.newBuilder().setUsername(request.getUsername()).build());
+                if(accepted.getPendingList().isEmpty())
+                {
+                    repository.deleteById(user.getUsername());
+                    responseObserver.onNext(Created.newBuilder().setCreated(true).build());
+                }
+                else
+                    responseObserver.onNext(Created.newBuilder().setCreated(false).build());
+            }
+            else if(user.getType()==UserType.HOST)
+            {
+                ListOfAccommodationResp accommodations= synchronousAccommodation.getAccommodationsByHostId(HostIdReq.newBuilder().setHostId(user.getUsername()).build());
+                for (var acc:accommodations.getAccommodationsList()
+                     ) {
+                    allPending allAccepted=synchronousReservation.showAllAcceptedReservationsAccommodation(AccommodationId.newBuilder().setId(acc.getId()).build());
+                        if(!allAccepted.getPendingList().isEmpty()){
+                            responseObserver.onNext(Created.newBuilder().setCreated(false).build());
+                            responseObserver.onCompleted();
+                            return;
+                        }
+                }
+                for (var acc:accommodations.getAccommodationsList()
+                ) {
+                    synchronousAccommodation.deleteAccommodation(AccommodationIdReq.newBuilder().setId(acc.getId()).build());
+                }
+                repository.deleteById(user.getUsername());
+                responseObserver.onNext(Created.newBuilder().setCreated(true).build());
+            }
             responseObserver.onCompleted();
     }
 }
