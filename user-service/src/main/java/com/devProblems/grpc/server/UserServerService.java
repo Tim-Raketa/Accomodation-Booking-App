@@ -142,6 +142,10 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
                             return;
                         }
                 }
+                for (var acc:accommodations.getAccommodationsList()
+                ) {
+                    synchronousAccommodation.deleteAccommodation(AccommodationIdReq.newBuilder().setId(acc.getId()).build());
+                }
                 repository.deleteById(user.getUsername());
                 responseObserver.onNext(Created.newBuilder().setCreated(true).build());
             }
