@@ -108,4 +108,17 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             responseObserver.onNext(CancelCountMsg.newBuilder().setCancelCount(tempUser.getCancelCount()).build());
             responseObserver.onCompleted();
     }
+
+    @Override
+    public void deleteUser(UserId request, StreamObserver<Created> responseObserver) {
+            User user = repository.findById(request.getUsername()).get();
+            if(user.getType()==UserType.GUEST)
+            {
+
+            }
+            else if(user.getType()==UserType.HOST)
+            {
+
+            }
+    }
 }
