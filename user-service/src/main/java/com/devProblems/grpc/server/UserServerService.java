@@ -122,7 +122,7 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             {
                 allPending accepted=synchronousReservation.showAllAcceptedReservations
                         (UsernameReq.newBuilder().setUsername(request.getUsername()).build());
-                if(accepted.getPendingList().stream().filter(acc-> LocalDate.parse(acc.getStartDate()).isAfter(LocalDate.now())).toList().isEmpty())
+                if(accepted.getPendingList().isEmpty())
                 {
                     repository.deleteById(user.getUsername());
                     responseObserver.onNext(Created.newBuilder().setCreated(true).build());
@@ -132,7 +132,18 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             }
             else if(user.getType()==UserType.HOST)
             {
-                
+                ListOfAccommodationResp accommodations= synchronousAccommodation.getAccommodationsByHostId(HostIdReq.newBuilder().setHostId(user.getUsername()).build());
+                for (var acc:accommodations.getAccommodationsList()
+                     ) {
+                    allPending allAccepted=synchronousReservation.showAllAcceptedReservationsAccommodation(AccommodationId.newBuilder().setId(acc.getId()).build());
+                        if(!allAccepted.getPendingList().isEmpty()){
+                            responseObserver.onNext(Created.newBuilder().setCreated(false).build());
+                            responseObserver.onCompleted();
+                            return;
+                        }
+                }
+                repository.deleteById(user.getUsername());
+                responseObserver.onNext(Created.newBuilder().setCreated(true).build());
             }
             responseObserver.onCompleted();
     }

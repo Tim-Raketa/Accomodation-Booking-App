@@ -216,6 +216,16 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     }
 
     @Override
+    public void showAllAcceptedReservationsAccommodation(AccommodationId request, StreamObserver<allPending> responseObserver) {
+        List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getAccommodationId()==request.getId())
+                .filter(reservation -> reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED)
+                .filter(reservation -> reservation.getStartTime().isAfter(LocalDate.now()))
+                .toList();
+
+        responseObserver.onNext(allPending.newBuilder().addAllPending(convertToPending(reservations)).build());
+        responseObserver.onCompleted();
+    }
+    @Override
     public void showAllPendingReservations(AccommodationId request, StreamObserver<allPending> responseObserver) {
         List<Reservation> reservations=repository.findAll().stream().filter(reservation->reservation.getAccommodationId()==request.getId())
                 .filter(reservation -> reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
