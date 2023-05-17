@@ -220,10 +220,8 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
 
             Optional<RentableInterval> Interval = rentableIntervalRepository.findAll().stream()
                     .filter(interval-> interval.getAccommodationId() == acc.getId())
-                    .filter(interval-> (interval.getStartTime().isBefore(LocalDate.parse(request.getStartDate()))
-                            || interval.getStartTime().isEqual(LocalDate.parse(request.getStartDate())))
-                            && (interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()))
-                            || interval.getEndTime().isEqual(LocalDate.parse(request.getEndDate())))
+                    .filter(interval-> interval.getStartTime().isBefore(LocalDate.parse(request.getStartDate()).plusDays(1))
+                            && interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()).minusDays(1))
                     ).findFirst();
 
            if(Interval.isPresent()) {
