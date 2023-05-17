@@ -212,16 +212,18 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
         //radi se search za sve osim termina
         List<Accommodation> accomodations=accommodationRepository.findAll().stream()
                 .filter(accommodation -> accommodation.getLocation().toLowerCase().contains(request.getLocation().toLowerCase()) && accommodation.getDeleted()==false)
-                .filter(accommodation -> accommodation.getMaxGuests()>request.getNumberOfGuests()
-                        && request.getNumberOfGuests()>accommodation.getMinGuests())
+                .filter(accommodation -> accommodation.getMaxGuests()>=request.getNumberOfGuests()
+                        && request.getNumberOfGuests()>=accommodation.getMinGuests())
                 .toList()
                 ;
         for (var acc:accomodations) {
 
-            Optional<RentableInterval> Interval=rentableIntervalRepository.findAll().stream()
-                    .filter(interval-> interval.getAccommodationId()==acc.getId())
-                    .filter(interval-> interval.getStartTime().isBefore(LocalDate.parse(request.getStartDate()))
-                            &&interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()))
+            Optional<RentableInterval> Interval = rentableIntervalRepository.findAll().stream()
+                    .filter(interval-> interval.getAccommodationId() == acc.getId())
+                    .filter(interval-> (interval.getStartTime().isBefore(LocalDate.parse(request.getStartDate()))
+                            || interval.getStartTime().isEqual(LocalDate.parse(request.getStartDate())))
+                            && (interval.getEndTime().isAfter(LocalDate.parse(request.getEndDate()))
+                            || interval.getEndTime().isEqual(LocalDate.parse(request.getEndDate())))
                     ).findFirst();
 
            if(Interval.isPresent()) {
