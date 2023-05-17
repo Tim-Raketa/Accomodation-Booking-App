@@ -43,6 +43,7 @@ public class User {
         this.email = req.getEmail();
         this.residency = req.getResidency();
         this.type = req.getType();
+        this.CancelCount=req.getCancelCount();
     }
 
 

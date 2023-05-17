@@ -1,7 +1,6 @@
 package com.devProblems.grpc.client.DTO;
 
 import com.devProblems.EditReq;
-import com.devProblems.UserReq;
 import com.devProblems.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +21,7 @@ public class EditDTO {
     private String residency;
     private UserType type;
     private String oldUsername;
+    private int cancelCount;
 
     public EditDTO(EditReq req){
         this.username = req.getUsername();
@@ -32,5 +32,6 @@ public class EditDTO {
         this.residency = req.getResidency();
         this.type = req.getType();
         this.oldUsername = req.getOldUsername();
+        this.cancelCount = req.getCancelCount();
     }
 }

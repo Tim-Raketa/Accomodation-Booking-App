@@ -53,6 +53,7 @@ message EditReq{
   string residency = 6;
   UserType type = 7;
   string oldUsername = 8;
+  int32 cancelCount = 9;
 }
 
 
