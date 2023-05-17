@@ -87,14 +87,6 @@ public class ReservationService {
                         .build());
         return response.getAvailable();
     }
-    public List<PendingDTO> getAllPending(String username) {
-        UsernameReq Request= UsernameReq.newBuilder().setUsername(username).build();
-        allPending response= synchronousReservation.getAllPendingReservationsUser(Request);
-        List<Pending> resp=response.getPendingList();
-        return convertPending(resp);
-    }
-
-
     public Boolean isAvailable(CreateReservationDTO res) {
         isAvailable response= synchronousReservation.checkAvailability(
                 ReservationReq.newBuilder()
@@ -113,6 +105,13 @@ public class ReservationService {
         List<Pending> resp=response.getPendingList();
         return convertPending(resp);
     }
+    public List<PendingDTO> getAllAccepted(Long accommodationId) {
+        AccommodationId Request = AccommodationId.newBuilder().setId(accommodationId).build();
+        allPending response= synchronousReservation.showAllAcceptedReservationsAccommodation(Request);
+        List<Pending> resp = response.getPendingList();
+        return convertPending(resp);
+    }
+
     public List<PendingDTO> convertPending(List<Pending> xyz){
         List<PendingDTO> newList=new ArrayList<>();
         for (Pending resp: xyz) {
@@ -127,6 +126,14 @@ public class ReservationService {
         List<Pending> resp=response.getPendingList();
         return convertPending(resp);
     }
+
+    public List<PendingDTO> getAllPending(String username) {
+        UsernameReq Request= UsernameReq.newBuilder().setUsername(username).build();
+        allPending response= synchronousReservation.getAllPendingReservationsUser(Request);
+        List<Pending> resp=response.getPendingList();
+        return convertPending(resp);
+    }
+
 
 
 }

@@ -48,6 +48,10 @@ public class ReservationsController {
     public List<PendingDTO> getReservationsPending(@PathVariable Long accommodationId){
         return reservationService.getAllPending(accommodationId);
     }
+    @GetMapping("/accepted/accommodation={accommodationId}")
+    public List<PendingDTO> getReservationsAccepted(@PathVariable Long accommodationId){
+        return reservationService.getAllAccepted(accommodationId);
+    }
     @GetMapping("/pending/username={username}")
     public List<PendingDTO> getReservationsPendingUser(@PathVariable String username){
         return reservationService.getAllPending(username);
