@@ -1,0 +1,15 @@
+1.Uradi maven install za taj servis
+2.Napravi dockerfile unutar projekta tog servisa
+    koji treba da izgleda nesto ovako
+
+
+    FROM openjdk:19
+    ADD target/IMESERVISA-service-2.6.2.jar IMESERVISA-service-2.6.2.jar
+    ENTRYPOINT ["java","-jar","IMESERVISA-service-2.6.2.jar"]
+
+
+3. Otvori terminal u folderu gde je taj servis i ukucaj komandu docker build -t "IMESERVISA"-service-2.6.2.jar .
+4. Proveriti koju bazu koristi i tu vrstu porekopirati od vec postojecih
+5. Ako koristi Postgre uci u pg_hba.conf i dodati ovu liniju koda na kraj fajla
+        host all all all scram-sha-256
+6. I za kraj prebaciti svuda gde stoji localhost u docker safe veriziju toga

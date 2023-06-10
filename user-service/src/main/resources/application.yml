@@ -3,7 +3,7 @@ grpc:
     port: 9002
   client:
     grpc-reservation-service:
-      address: static://localhost:9001
+      address: static://Reservation-service:9001
       negotiationType: plaintext
     grpc-accommodation-service:
       address: static://localhost:9003
@@ -18,3 +18,4 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/Users
+# spring.data.mongodb.uri: mongodb://UserDb:27017/Users

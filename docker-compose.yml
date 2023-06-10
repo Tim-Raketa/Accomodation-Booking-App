@@ -1,0 +1,67 @@
+version: "3"
+services:
+
+  ReservationDb:
+    image: postgres:latest
+    container_name: "ReservationDb"
+
+    ports:
+      - 8012:5432
+    volumes:
+      - ./db-data2/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=ftn
+      - POSTGRES_DB=reservations
+
+  AccommodationDb:
+    image: postgres:latest
+    container_name: "AccommodationDb"
+    ports:
+      - 8013:5432
+    volumes:
+      - ./db-data3/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=ftn
+      - POSTGRES_DB=accommodations
+
+  UserDb:
+    image: mongo:latest
+    container_name: "UserDb"
+    ports:
+      - 8001:27017
+    volumes:
+      - ./mongo_store:/data/db
+
+  Client-service:
+    image: client-service-2.6.2.jar:latest
+    container_name: client-API
+    ports:
+      - 8080:8080
+
+  User-service:
+    image: user-service-2.6.2.jar:latest
+    container_name: user-service
+    ports:
+      - 9002:9002
+    depends_on:
+      - UserDb
+
+  Reservation-service:
+    image: reservation-service-2.6.2.jar:latest
+    container_name: reservation-service
+    ports:
+      - 9001:9001
+    depends_on:
+      - ReservationDb
+
+  Accommodation-service:
+    image: accommodation-service-2.6.2.jar:latest
+    container_name: accommodation-service
+    ports:
+      - 9003:9003
+    depends_on:
+      - AccommodationDb
+
+

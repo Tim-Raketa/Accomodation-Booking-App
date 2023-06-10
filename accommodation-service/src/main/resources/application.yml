@@ -3,11 +3,11 @@ grpc:
     port: 9003
   client:
     grpc-reservation-service:
-      address: static://localhost:9001
+      address: static://Reservation-service:9001
       negotiationType: plaintext
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/accommodations
+    url: jdbc:postgresql://AccommodationDb:5432/accommodations
     username: postgres
     password: ftn
   jpa:
@@ -15,4 +15,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
