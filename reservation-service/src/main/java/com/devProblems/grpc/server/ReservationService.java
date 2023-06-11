@@ -24,6 +24,9 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClientAccommodation;
+
+    @GrpcClient("grpc-accommodation-service")
+    AccommodationServiceGrpc.AccommodationServiceStub asynchronousClientAccommodation;
     @Autowired
     ReservationRepository repository;
 
@@ -48,30 +51,75 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onCompleted();
     }
 
+
+
     @Override
     public void createReservation(ReservationReq request, StreamObserver<ReservationResp> responseObserver) {
+        //step 1 create the reservation
         Reservation res=new Reservation(request);
-        Automatic auto=synchronousClientAccommodation.isAutomatic(AccommodationAvailable.newBuilder()
+        repository.save(res);
+
+        //step 2 check if interval is free
+        isIntervalFree(isIntervalFreMsg.newBuilder().setStartDate(request.getStartDate()).setEndDate(request.getEndDate())
+                .setAccommodationId(request.getAccommodationId()).build(), new StreamObserver<isAvailable>() {
+            @Override
+            public void onNext(isAvailable available) {
+                if(!available.getAvailable()){
+                    //step 2a delete res if its taken
+                    repository.delete(res);
+                    responseObserver.onNext(null);
+                    responseObserver.onCompleted();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+
+
+        //step 3 check if acceptance is automatic or not
+        asynchronousClientAccommodation.isAutomatic(AccommodationAvailable.newBuilder()
                 .setId(res.getAccommodationId())
                 .setStartDate(res.getStartTime().toString())
                 .setEndDate(res.getEndTime().toString())
-                .build());
-        if(auto.getAuto())
-            res.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
+                .build(), new StreamObserver<Automatic>() {
+            @Override
+            public void onNext(Automatic auto) {
+                if(auto.getAuto()) {
+                    res.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
+                    repository.save(res);
+                }
+            }
 
-        res=repository.save(res);
-        responseObserver.onNext(
-                ReservationResp.newBuilder()
-                        .setStartDate(res.getStartTime().toString())
-                        .setEndDate(res.getEndTime().toString())
-                        .setStatus(res.getStatus())
-                        .setAccommodationId(res.getAccommodationId())
-                        .setNumberOfGuests(res.getNumberOfPeople())
-                        .setUsername(res.getUsername()).
-                        setId(res.getId()).
-                        build())
-        ;
-        responseObserver.onCompleted();
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                //step 4 a) set the status of reservation to accepted if true
+                responseObserver.onNext(
+                        ReservationResp.newBuilder()
+                                .setStartDate(res.getStartTime().toString())
+                                .setEndDate(res.getEndTime().toString())
+                                .setStatus(res.getStatus())
+                                .setAccommodationId(res.getAccommodationId())
+                                .setNumberOfGuests(res.getNumberOfPeople())
+                                .setUsername(res.getUsername()).
+                                setId(res.getId()).
+                                build())
+                ;
+                responseObserver.onCompleted();
+            }
+        });
+
     }
 
     @Override
