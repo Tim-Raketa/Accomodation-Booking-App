@@ -6,6 +6,7 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -131,10 +132,12 @@ public class AccommodationClientService {
     }
 
     public List<SearchResultDTO> filter(FilterRequestDTO filterReq) {
+        List<String> items =Arrays.asList(filterReq.getAmenities().split(","));
         SearchReq request=SearchReq.newBuilder().setStartDate(filterReq.getStartDate()).setEndDate(filterReq.getEndDate())
                 .setLocation(filterReq.getLocation()).setNumberOfGuests(filterReq.getNumberOfGuests()).build();
         ListOfSearchResp response=synchronousAccommodation.search(request);
         List<SearchResp> list=response.getResponsesList();
+        list= list.stream().filter(accommodation->items.stream().allMatch(accommodation.getPerks().toLowerCase()::contains)).toList();
         return convertForSearch(list);
     }
 }
