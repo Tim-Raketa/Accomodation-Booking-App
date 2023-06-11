@@ -1,10 +1,7 @@
 package com.devProblems.grpc.client.service;
 
 import com.devProblems.*;
-import com.devProblems.grpc.client.DTO.AccommodationDTO;
-import com.devProblems.grpc.client.DTO.RentableIntervalDTO;
-import com.devProblems.grpc.client.DTO.SearchRequestDTO;
-import com.devProblems.grpc.client.DTO.SearchResultDTO;
+import com.devProblems.grpc.client.DTO.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
@@ -131,5 +128,13 @@ public class AccommodationClientService {
         AccommodationIdReq request = AccommodationIdReq.newBuilder().setId(id).build();
         Automatic response=synchronousAccommodation.deleteAccommodation(request);
         return response.getAuto();
+    }
+
+    public List<SearchResultDTO> filter(FilterRequestDTO filterReq) {
+        SearchReq request=SearchReq.newBuilder().setStartDate(filterReq.getStartDate()).setEndDate(filterReq.getEndDate())
+                .setLocation(filterReq.getLocation()).setNumberOfGuests(filterReq.getNumberOfGuests()).build();
+        ListOfSearchResp response=synchronousAccommodation.search(request);
+        List<SearchResp> list=response.getResponsesList();
+        return convertForSearch(list);
     }
 }
