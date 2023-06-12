@@ -9,16 +9,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SearchRequestDTO {
+public class FilterRequestDTO {
+    private String amenities;
+    private Integer minGrade;
+    private Integer maxGrade;
+    private Boolean onlyHighlighted;
     private String Location;
     private Integer numberOfGuests;
     private String startDate;
     private String endDate;
 
-    public SearchRequestDTO(FilterRequestDTO filter){
-        this.Location= filter.getLocation();
-        this.endDate= filter.getEndDate();
-        this.startDate= filter.getStartDate();
-        this.numberOfGuests=filter.getNumberOfGuests();
-    }
+
+
 }

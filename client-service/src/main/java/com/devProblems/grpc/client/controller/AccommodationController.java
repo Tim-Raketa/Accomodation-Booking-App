@@ -1,9 +1,6 @@
 package com.devProblems.grpc.client.controller;
 
-import com.devProblems.grpc.client.DTO.AccommodationDTO;
-import com.devProblems.grpc.client.DTO.RentableIntervalDTO;
-import com.devProblems.grpc.client.DTO.SearchRequestDTO;
-import com.devProblems.grpc.client.DTO.SearchResultDTO;
+import com.devProblems.grpc.client.DTO.*;
 import com.devProblems.grpc.client.service.AccommodationClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -61,5 +58,9 @@ public class AccommodationController {
     @PostMapping("/search")
     public List<SearchResultDTO> search(@RequestBody SearchRequestDTO searchReq){
         return accommodationClientService.search(searchReq);
+    }
+    @PostMapping("/filter")
+    public List<SearchResultDTO> filter(@RequestBody FilterRequestDTO filterReq){
+        return accommodationClientService.filter(filterReq);
     }
 }
