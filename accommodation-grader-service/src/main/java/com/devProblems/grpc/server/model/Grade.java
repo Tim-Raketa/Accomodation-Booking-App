@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Document("grades")
 public class Grade {
-    @Id
-    Integer id;
+
     Integer accommodationId;
     String username;
     Integer grade;
