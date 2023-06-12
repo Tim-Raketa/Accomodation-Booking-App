@@ -16,6 +16,8 @@ import java.util.Optional;
 public class AccommodationGraderService extends AccommodationGraderServiceGrpc.AccommodationGraderServiceImplBase {
 
     @Autowired
+    SequenceGeneratorService seqGen;
+    @Autowired
     AccommodationGradesRepository repository;
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClient;
@@ -25,7 +27,9 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
         boolean success=false;
         Optional<Grade> grade=repository.findByAccommodationIdAndUsername(request.getAccommodationId(),request.getUsername());
         if(grade.isEmpty()){
-            repository.save(new Grade(request));
+            Grade grades=new Grade(request);
+            grades.setId(seqGen.getSequenceNumber(grades.SEQUENCE_NAME));
+            repository.save(grades);
             success=true;
         }
         responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());

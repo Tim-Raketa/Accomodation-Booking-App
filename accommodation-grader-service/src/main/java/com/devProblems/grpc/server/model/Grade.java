@@ -2,11 +2,9 @@ package com.devProblems.grpc.server.model;
 
 import com.devProblems.AccommodationGrade;
 import com.devProblems.CreateAccommodationGrade;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -15,12 +13,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Document("grades")
+@Data
 public class Grade {
-
-    Integer accommodationId;
-    String username;
-    Integer grade;
-    LocalDateTime timeStamp;
+    @Transient
+    public static final String SEQUENCE_NAME = "grades_sequence";
+    @Id
+    private Integer id;
+    private Integer accommodationId;
+    private String username;
+    private Integer grade;
+    private LocalDateTime timeStamp;
 
     public Grade(CreateAccommodationGrade accommodationGrade){
         this.accommodationId=accommodationGrade.getAccommodationId();
