@@ -340,19 +340,17 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
     }
 
     @Override
-    public void hasVisited(HasVisitedReq request, StreamObserver<isAvailable> responseObserver) {
-        Optional<Reservation> res=repository.findAll().stream()
-                .filter(reservation -> reservation.getAccommodationId()==request.getAccommodationId()
-                        && reservation.getUsername().equalsIgnoreCase(request.getUsername())
+    public void hasVisited(HasVisitedReq request, StreamObserver<HasVisitedResp> responseObserver) {
+        List<Long> res=repository.findAll().stream()
+                .filter(reservation -> reservation.getUsername().equalsIgnoreCase(request.getUsername())
                         && reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED
                         && reservation.getEndTime().isBefore(LocalDate.now())
                 )
-                .findFirst();
-        boolean Visited=true;
-        if(res.isEmpty()){
-            Visited=false;
-        }
-        responseObserver.onNext(isAvailable.newBuilder().setAvailable(Visited).build());
+                .map(reservation -> Long.valueOf(reservation.getAccommodationId())).toList();
+        responseObserver.onNext(HasVisitedResp.newBuilder().addAllAccommodationId(res).build());
         responseObserver.onCompleted();
     }
+
+
+
 }
