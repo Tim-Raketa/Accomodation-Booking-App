@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.devProblems;
+
+message CreateAccommodationGrade{
+  int32 accommodation_id=1;
+  string username=2;
+  int32 grade=3;
+  string time=4;
+}
+message SpecificGrade{
+  int32 accommodation_id=1;
+  string username=2;
+}
+message Successful{
+  bool success=1;
+}
+message GetAccommodationGrade{
+  int32 accommodation_id=1;
+}
+
+message AccommodationGrade{
+  double grade=1;
+}
+message AllGrades{
+  repeated CreateAccommodationGrade grades=1;
+}
+
+service AccommodationGraderService {
+  rpc CreateGrade(CreateAccommodationGrade) returns (Successful);
+  rpc UpdateGrade(CreateAccommodationGrade) returns (Successful);
+  rpc DeleteGrade(SpecificGrade) returns (Successful);
+  rpc GetSpecificGrade(SpecificGrade) returns (CreateAccommodationGrade);
+  rpc GetAllGrades(GetAccommodationGrade) returns (AllGrades);
+  rpc GetAvgGrade(GetAccommodationGrade) returns (AccommodationGrade);
+}
