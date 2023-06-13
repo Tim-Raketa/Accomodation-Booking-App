@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @GrpcService
@@ -335,6 +336,22 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         toDelete.forEach(reservation -> reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
         repository.saveAll(toDelete);
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void hasVisited(HasVisitedReq request, StreamObserver<isAvailable> responseObserver) {
+        Optional<Reservation> res=repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId()==request.getAccommodationId()
+                        && reservation.getUsername().equalsIgnoreCase(request.getUsername())
+                        && reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED
+                )
+                .findFirst();
+        boolean Visited=true;
+        if(res.isEmpty()){
+            Visited=false;
+        }
+        responseObserver.onNext(isAvailable.newBuilder().setAvailable(Visited).build());
         responseObserver.onCompleted();
     }
 }

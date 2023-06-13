@@ -65,5 +65,10 @@ public class ReservationsController {
         return reservationService.isAvailable(res);
     }
 
+    @GetMapping ("/hasVisited/{accommodationId}/{username}")
+    public Boolean HasVisited(@PathVariable Long accommodationId,@PathVariable String username){
+        return reservationService.hasVisited(accommodationId,username);
+    }
+
 
 }

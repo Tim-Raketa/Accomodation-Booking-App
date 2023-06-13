@@ -135,5 +135,9 @@ public class ReservationService {
     }
 
 
-
+    public Boolean hasVisited(Long accommodationId,String username) {
+        HasVisitedReq req = HasVisitedReq.newBuilder().setAccommodationId(accommodationId).setUsername(username).build();
+        isAvailable response = synchronousReservation.hasVisited(req);
+        return response.getAvailable();
+    }
 }

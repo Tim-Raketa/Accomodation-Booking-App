@@ -72,6 +72,10 @@ message isIntervalFreMsg{
   string end_date = 2;
   int64 accommodationId=3;
 }
+message HasVisitedReq{
+  string username=1;
+  int64 accommodationId=3;
+}
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
@@ -88,4 +92,5 @@ service ReservationService {
   rpc getAllPendingReservationsUser(UsernameReq) returns(allPending);
   rpc showAllAcceptedReservationsAccommodation(AccommodationId) returns(allPending);
   rpc deleteAllForAccommodation(AccommodationId) returns(isAvailable);
+  rpc HasVisited(HasVisitedReq)returns(isAvailable);
 }
