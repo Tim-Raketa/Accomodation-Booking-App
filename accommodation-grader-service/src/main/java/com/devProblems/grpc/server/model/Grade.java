@@ -30,4 +30,10 @@ public class Grade {
         this.grade=accommodationGrade.getGrade();
         this.timeStamp=LocalDateTime.parse(accommodationGrade.getTime());
     }
+    public CreateAccommodationGrade ToResp(){
+        return CreateAccommodationGrade.newBuilder()
+                .setAccommodationId(this.accommodationId).setGrade(this.grade)
+                .setTime(this.timeStamp.toString()).setUsername(this.username)
+                .build();
+    }
 }

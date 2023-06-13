@@ -10,6 +10,10 @@ message CreateAccommodationGrade{
   int32 grade=3;
   string time=4;
 }
+message SpecificGrade{
+  int32 accommodation_id=1;
+  string username=2;
+}
 message Successful{
   bool success=1;
 }
@@ -18,12 +22,17 @@ message GetAccommodationGrade{
 }
 
 message AccommodationGrade{
-  int64 grade=1;
+  double grade=1;
+}
+message AllGrades{
+  repeated CreateAccommodationGrade grades=1;
 }
 
 service AccommodationGraderService {
   rpc CreateGrade(CreateAccommodationGrade) returns (Successful);
   rpc UpdateGrade(CreateAccommodationGrade) returns (Successful);
-  rpc DeleteGrade(CreateAccommodationGrade) returns (Successful);
+  rpc DeleteGrade(SpecificGrade) returns (Successful);
+  rpc GetSpecificGrade(SpecificGrade) returns (CreateAccommodationGrade);
+  rpc GetAllGrades(GetAccommodationGrade) returns (AllGrades);
   rpc GetAvgGrade(GetAccommodationGrade) returns (AccommodationGrade);
 }

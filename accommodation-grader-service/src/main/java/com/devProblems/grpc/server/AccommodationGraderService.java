@@ -52,7 +52,7 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     }
 
     @Override
-    public void deleteGrade(CreateAccommodationGrade request, StreamObserver<Successful> responseObserver) {
+    public void deleteGrade(SpecificGrade request, StreamObserver<Successful> responseObserver) {
         boolean success=false;
         Optional<Grade> grade=repository.findByAccommodationIdAndUsername(request.getAccommodationId(),request.getUsername());
         if(grade.isPresent()){
@@ -64,8 +64,28 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     }
 
     @Override
+    public void getSpecificGrade(SpecificGrade request, StreamObserver<CreateAccommodationGrade> responseObserver) {
+        Optional<Grade> grade=repository.findByAccommodationIdAndUsername(request.getAccommodationId(),request.getUsername());
+        responseObserver.onNext(grade.get().ToResp());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAllGrades(GetAccommodationGrade request, StreamObserver<AllGrades> responseObserver) {
+        responseObserver.onNext(AllGrades.newBuilder()
+                .addAllGrades(repository.findAllByAccommodationId(request.getAccommodationId())
+                        .stream().map(Grade::ToResp).toList())
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getAvgGrade(GetAccommodationGrade request, StreamObserver<AccommodationGrade> responseObserver) {
-        super.getAvgGrade(request, responseObserver);
+        Double average=repository.findAll().stream()
+                .filter(grade-> grade.getAccommodationId()==request.getAccommodationId())
+                .mapToInt(grade->grade.getGrade()).average().getAsDouble();
+            responseObserver.onNext(AccommodationGrade.newBuilder().setGrade(average).build());
+            responseObserver.onCompleted();
     }
 
 }
