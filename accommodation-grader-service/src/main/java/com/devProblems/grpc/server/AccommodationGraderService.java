@@ -80,6 +80,15 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     }
 
     @Override
+    public void getAllGradesUser(UserMsg request, StreamObserver<AllGrades> responseObserver) {
+        responseObserver.onNext(AllGrades.newBuilder()
+                .addAllGrades(repository.findAllByUsername(request.getUsername())
+                        .stream().map(Grade::ToResp).toList())
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getAvgGrade(GetAccommodationGrade request, StreamObserver<AccommodationGrade> responseObserver) {
         Double average=repository.findAll().stream()
                 .filter(grade-> grade.getAccommodationId()==request.getAccommodationId())

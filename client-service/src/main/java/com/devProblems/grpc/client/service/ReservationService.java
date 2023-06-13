@@ -1,5 +1,6 @@
 package com.devProblems.grpc.client.service;
 
+import com.devProblems.grpc.client.DTO.AccommodationDTO;
 import com.devProblems.grpc.client.DTO.CreateReservationDTO;
 import com.devProblems.grpc.client.DTO.PendingDTO;
 import com.devProblems.grpc.client.DTO.ReservationDTO;
@@ -14,6 +15,8 @@ import java.util.List;
 public class ReservationService {
     @GrpcClient("grpc-reservation-service")
     ReservationServiceGrpc.ReservationServiceBlockingStub synchronousReservation;
+    @GrpcClient("grpc-accommodation-service")
+    AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousAccommodation;
 
     public List<ReservationDTO> getAllReservations(){
         ListOfReservationResp emptyRequest= ListOfReservationResp.newBuilder().build();
@@ -135,5 +138,18 @@ public class ReservationService {
     }
 
 
+    public List<AccommodationDTO> hasVisited(String username) {
+        HasVisitedReq req = HasVisitedReq.newBuilder().setUsername(username).build();
+        HasVisitedResp response = synchronousReservation.hasVisited(req);
+        var visited=convertAcc(response.getAccommodationIdList().stream().map(id->synchronousAccommodation.getById(AccommodationIdReq.newBuilder().setId(id).build())).toList());
+        return visited;
+    }
 
+    public List<AccommodationDTO> convertAcc(List<AccommodationResp> accommodations){
+        List<AccommodationDTO> newList = new ArrayList<>();
+        for(AccommodationResp resp : accommodations){
+            newList.add(new AccommodationDTO(resp));
+        }
+        return newList;
+    }
 }

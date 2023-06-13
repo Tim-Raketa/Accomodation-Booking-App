@@ -27,6 +27,9 @@ message AccommodationGrade{
 message AllGrades{
   repeated CreateAccommodationGrade grades=1;
 }
+message UserMsg{
+  string username=1;
+}
 
 service AccommodationGraderService {
   rpc CreateGrade(CreateAccommodationGrade) returns (Successful);
@@ -34,5 +37,6 @@ service AccommodationGraderService {
   rpc DeleteGrade(SpecificGrade) returns (Successful);
   rpc GetSpecificGrade(SpecificGrade) returns (CreateAccommodationGrade);
   rpc GetAllGrades(GetAccommodationGrade) returns (AllGrades);
+  rpc GetAllGradesUser(UserMsg) returns (AllGrades);
   rpc GetAvgGrade(GetAccommodationGrade) returns (AccommodationGrade);
 }

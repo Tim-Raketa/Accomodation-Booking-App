@@ -1,5 +1,6 @@
 package com.devProblems.grpc.client.controller;
 
+import com.devProblems.grpc.client.DTO.AccommodationDTO;
 import com.devProblems.grpc.client.DTO.CreateReservationDTO;
 import com.devProblems.grpc.client.DTO.PendingDTO;
 import com.devProblems.grpc.client.DTO.ReservationDTO;
@@ -63,6 +64,11 @@ public class ReservationsController {
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){
         return reservationService.isAvailable(res);
+    }
+
+    @GetMapping ("/hasVisited/{username}")
+    public List<AccommodationDTO> HasVisited(@PathVariable String username){
+        return reservationService.hasVisited(username);
     }
 
 

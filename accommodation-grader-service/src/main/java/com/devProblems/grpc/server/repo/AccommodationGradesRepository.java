@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface AccommodationGradesRepository extends MongoRepository<Grade, Integer>{
     Optional<Grade> findByAccommodationIdAndUsername(Integer id, String username);
     List<Grade> findAllByAccommodationId(Integer id);
+    List<Grade> findAllByUsername(String username);
 
 
 }

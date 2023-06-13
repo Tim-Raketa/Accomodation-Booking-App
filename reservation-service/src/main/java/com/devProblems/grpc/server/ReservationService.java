@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @GrpcService
@@ -231,7 +230,8 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         }
         reservation.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
         repository.save(reservation);
-        List<Reservation> reservations= repository.findAll().stream().filter(res->res.getAccommodationId()==reservation.getAccommodationId())
+        List<Reservation> reservations= repository.findAll().stream()
+                .filter(res->res.getAccommodationId()==reservation.getAccommodationId())
                 .filter(res -> res.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
                 .filter(res-> !(res.getEndTime().isBefore(reservation.getStartTime()) || res.getStartTime().isAfter(reservation.getStartTime()) )).toList();
         reservations.forEach(res->res.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
@@ -331,10 +331,28 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     @Override
     public void deleteAllForAccommodation(AccommodationId request, StreamObserver<isAvailable> responseObserver) {
-        List<Reservation> toDelete=repository.findAll().stream().filter(reservation -> reservation.getAccommodationId()==request.getId()).toList();
+        List<Reservation> toDelete=repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId()==request.getId())
+                .toList();
         toDelete.forEach(reservation -> reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
         repository.saveAll(toDelete);
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void hasVisited(HasVisitedReq request, StreamObserver<HasVisitedResp> responseObserver) {
+        List<Long> res=repository.findAll().stream()
+                .filter(reservation -> reservation.getUsername().equalsIgnoreCase(request.getUsername())
+                        && reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED
+                        && reservation.getEndTime().isBefore(LocalDate.now())
+                )
+                .map(reservation -> Long.valueOf(reservation.getAccommodationId())).toList();
+        Set<Long> set = new HashSet<>(res);
+        responseObserver.onNext(HasVisitedResp.newBuilder().addAllAccommodationId(set.stream().toList()).build());
+        responseObserver.onCompleted();
+    }
+
+
+
 }
