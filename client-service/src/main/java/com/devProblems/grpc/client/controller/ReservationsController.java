@@ -66,7 +66,7 @@ public class ReservationsController {
         return reservationService.isAvailable(res);
     }
 
-    @GetMapping ("/hasVisited/{accommodationId}/{username}")
+    @GetMapping ("/hasVisited/{username}")
     public List<AccommodationDTO> HasVisited(@PathVariable String username){
         return reservationService.hasVisited(username);
     }

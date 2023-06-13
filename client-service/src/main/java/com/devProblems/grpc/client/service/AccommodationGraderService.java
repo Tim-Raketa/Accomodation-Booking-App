@@ -31,6 +31,10 @@ public class AccommodationGraderService {
         AllGrades grades=synchronousGrader.getAllGrades(GetAccommodationGrade.newBuilder().setAccommodationId(accId).build());
         return grades.getGradesList().stream().map(grade->new CreateGradeDTO(grade)).toList();
     }
+    public List<CreateGradeDTO> getGradesForUser(String username) {
+        AllGrades grades=synchronousGrader.getAllGradesUser(UserMsg.newBuilder().setUsername(username).build());
+        return grades.getGradesList().stream().map(grade->new CreateGradeDTO(grade)).toList();
+    }
 
     public CreateGradeDTO getSpecificGrade(Integer accId, String username) {
         CreateAccommodationGrade grade=synchronousGrader.getSpecificGrade(SpecificGrade.newBuilder()
@@ -43,4 +47,5 @@ public class AccommodationGraderService {
                 .getGrade();
         return avgGrade;
     }
+
 }

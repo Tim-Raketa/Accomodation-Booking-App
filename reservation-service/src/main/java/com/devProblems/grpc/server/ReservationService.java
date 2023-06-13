@@ -230,7 +230,8 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         }
         reservation.setStatus(ReservationStatus.RESERVATION_STATUS_ACCEPTED);
         repository.save(reservation);
-        List<Reservation> reservations= repository.findAll().stream().filter(res->res.getAccommodationId()==reservation.getAccommodationId())
+        List<Reservation> reservations= repository.findAll().stream()
+                .filter(res->res.getAccommodationId()==reservation.getAccommodationId())
                 .filter(res -> res.getStatus()==ReservationStatus.RESERVATION_STATUS_PENDING)
                 .filter(res-> !(res.getEndTime().isBefore(reservation.getStartTime()) || res.getStartTime().isAfter(reservation.getStartTime()) )).toList();
         reservations.forEach(res->res.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
@@ -330,7 +331,9 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
     @Override
     public void deleteAllForAccommodation(AccommodationId request, StreamObserver<isAvailable> responseObserver) {
-        List<Reservation> toDelete=repository.findAll().stream().filter(reservation -> reservation.getAccommodationId()==request.getId()).toList();
+        List<Reservation> toDelete=repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId()==request.getId())
+                .toList();
         toDelete.forEach(reservation -> reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
         repository.saveAll(toDelete);
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
