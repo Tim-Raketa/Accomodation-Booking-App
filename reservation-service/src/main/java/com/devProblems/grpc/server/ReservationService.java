@@ -345,6 +345,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 .filter(reservation -> reservation.getAccommodationId()==request.getAccommodationId()
                         && reservation.getUsername().equalsIgnoreCase(request.getUsername())
                         && reservation.getStatus()==ReservationStatus.RESERVATION_STATUS_ACCEPTED
+                        && reservation.getEndTime().isBefore(LocalDate.now())
                 )
                 .findFirst();
         boolean Visited=true;
