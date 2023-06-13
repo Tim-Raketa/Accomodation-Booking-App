@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @GrpcService
@@ -347,7 +345,8 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                         && reservation.getEndTime().isBefore(LocalDate.now())
                 )
                 .map(reservation -> Long.valueOf(reservation.getAccommodationId())).toList();
-        responseObserver.onNext(HasVisitedResp.newBuilder().addAllAccommodationId(res).build());
+        Set<Long> set = new HashSet<>(res);
+        responseObserver.onNext(HasVisitedResp.newBuilder().addAllAccommodationId(set.stream().toList()).build());
         responseObserver.onCompleted();
     }
 
