@@ -54,6 +54,7 @@ message EditReq{
   UserType type = 7;
   string oldUsername = 8;
   int32 cancelCount = 9;
+  bool prominent = 10;
 }
 
 

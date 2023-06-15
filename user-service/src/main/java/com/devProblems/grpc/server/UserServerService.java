@@ -23,6 +23,7 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
         User newUser = new User(request);
+        newUser.setProminent(false);
         Optional<User> tempUser = repository.findById(newUser.getUsername());
         if (tempUser.isEmpty()) {
             newUser = repository.save(newUser);
