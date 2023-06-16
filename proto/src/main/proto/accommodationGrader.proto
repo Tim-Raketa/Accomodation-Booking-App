@@ -10,10 +10,24 @@ message CreateAccommodationGrade{
   int32 grade=3;
   string time=4;
 }
+
+message CreateHostGrade{
+  string hostId=1;
+  string username=2;
+  int32 grade=3;
+  string time=4;
+}
+
 message SpecificGrade{
   int32 accommodation_id=1;
   string username=2;
 }
+
+message SpecificHostGrade{
+  string hostId=1;
+  string username=2;
+}
+
 message Successful{
   bool success=1;
 }
@@ -21,12 +35,26 @@ message GetAccommodationGrade{
   int32 accommodation_id=1;
 }
 
+message GetHostGrade{
+  string hostId=1;
+}
+
 message AccommodationGrade{
   double grade=1;
 }
+
+message HostGradeValue{
+  double grade=1;
+}
+
 message AllGrades{
   repeated CreateAccommodationGrade grades=1;
 }
+
+message AllHostGrades{
+  repeated CreateHostGrade grades=1;
+}
+
 message UserMsg{
   string username=1;
 }
@@ -39,4 +67,11 @@ service AccommodationGraderService {
   rpc GetAllGrades(GetAccommodationGrade) returns (AllGrades);
   rpc GetAllGradesUser(UserMsg) returns (AllGrades);
   rpc GetAvgGrade(GetAccommodationGrade) returns (AccommodationGrade);
+  rpc CreateGradeForHost(CreateHostGrade) returns (Successful);
+  rpc UpdateHostGrade(CreateHostGrade) returns (Successful);
+  rpc DeleteHostGrade(SpecificHostGrade) returns (Successful);
+  rpc GetSpecificHostGrade(SpecificHostGrade) returns (CreateHostGrade);
+  rpc GetAllHostGrades(GetHostGrade) returns (AllHostGrades);
+  rpc GetAllHostGradesByUser(UserMsg) returns (AllHostGrades);
+  rpc GetAvgHostGrade(GetHostGrade) returns (HostGradeValue);
 }
