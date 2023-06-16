@@ -8,11 +8,11 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.devProblems.grpc.server.model.User;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @GrpcService
 public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
+
     @Autowired
     UserRepository repository;
     @GrpcClient("grpc-reservation-service")
@@ -152,4 +152,29 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             }
             responseObserver.onCompleted();
     }
+
+    @Override
+    public void getProminentStatus(UserId request, StreamObserver<Prominent> responseObserver){
+        User user = repository.findById(request.getUsername()).get();
+
+        // ovdje dobavljanje 1.
+
+        // ovdje dobavljanje 2.
+
+        // ovdje dobavljanje 3.
+
+        // ovdje dobavljanje 4.
+
+        // ako ispuni sve uslove uradi ovo
+        user.setProminent(true);
+        repository.save(user);
+        responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
+
+        // u suprotnom uradi ovo
+        // responseObserver.onNext(Prominent.newBuilder().setProminent(false).build());
+
+
+        responseObserver.onCompleted();
+    }
+
 }
