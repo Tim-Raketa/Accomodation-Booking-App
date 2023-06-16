@@ -19,6 +19,8 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     ReservationServiceGrpc.ReservationServiceBlockingStub synchronousReservation;
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousAccommodation;
+    @GrpcClient("grpc-accommodation-grader-service")
+    AccommodationGraderServiceGrpc.AccommodationGraderServiceBlockingStub synchronousGrader;
 
     @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
@@ -157,8 +159,10 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     public void getProminentStatus(UserId request, StreamObserver<Prominent> responseObserver){
         User user = repository.findById(request.getUsername()).get();
 
-        // ovdje dobavljanje 1.
-
+        // 1. Srednja ocjena
+        GetHostGrade username = GetHostGrade.newBuilder().setHostId(request.getUsername()).build();
+        HostGradeValue response = synchronousGrader.getAvgHostGrade(username);
+        Double avgHostGrade = response.getGrade();
         // ovdje dobavljanje 2.
 
         // ovdje dobavljanje 3.
@@ -166,14 +170,14 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         // ovdje dobavljanje 4.
 
         // ako ispuni sve uslove uradi ovo
-        user.setProminent(true);
+        if (avgHostGrade > 4.7) {
+            user.setProminent(true);
+            responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
+        } else {
+            user.setProminent(false);
+            responseObserver.onNext(Prominent.newBuilder().setProminent(false).build());
+        }
         repository.save(user);
-        responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
-
-        // u suprotnom uradi ovo
-        // responseObserver.onNext(Prominent.newBuilder().setProminent(false).build());
-
-
         responseObserver.onCompleted();
     }
 

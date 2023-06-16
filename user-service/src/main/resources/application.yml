@@ -8,6 +8,9 @@ grpc:
     grpc-accommodation-service:
       address: static://localhost:9003
       negotiationType: plaintext
+    grpc-accommodation-grader-service:
+      address: static://localhost:9004
+      negotiationType: plaintext
 spring:
   data:
     mongodb:
