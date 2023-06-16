@@ -24,6 +24,7 @@ public class User {
     private String residency;
     private UserType type;
     private Integer CancelCount;
+    private Boolean prominent;
 
     public User(UserReq req){
         this.username = req.getUsername();
@@ -43,7 +44,8 @@ public class User {
         this.email = req.getEmail();
         this.residency = req.getResidency();
         this.type = req.getType();
-        this.CancelCount=req.getCancelCount();
+        this.CancelCount = req.getCancelCount();
+        this.prominent = req.getProminent();
     }
 
 
