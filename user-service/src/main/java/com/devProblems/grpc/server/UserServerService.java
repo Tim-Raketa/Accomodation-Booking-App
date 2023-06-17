@@ -186,8 +186,12 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         }
 
         // 4. Ukupno trajanje svih rezervacija
+        Long reservationDays = (long) 0;
+        for (Long acc_resp : accommodationIds_resp) {
+            reservationDays += synchronousReservation.getReservationDays(AccommodationId.newBuilder().setId(acc_resp).build()).getNumOfDays();
+        }
 
-        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5 && (cancelledReservations.floatValue()/allReservations.floatValue()) < 0.05) {
+        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5 && (cancelledReservations.floatValue()/allReservations.floatValue()) < 0.05 && reservationDays > 50L) {
             user.setProminent(true);
             responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
         } else {

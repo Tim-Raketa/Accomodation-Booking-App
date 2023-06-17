@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 
 @GrpcService
 public class ReservationService extends ReservationServiceGrpc.ReservationServiceImplBase {
@@ -385,6 +387,24 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onNext(CancelPercentage.newBuilder()
                 .setAllReservations(allReservations.size())
                 .setCancelledReservations(cancelledReservations.size())
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getReservationDays(AccommodationId request, StreamObserver<DaysReservations> responseObserver){
+        List<Reservation>  reservations = repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId() == request.getId() &
+                        reservation.getStatus() == ReservationStatus.RESERVATION_STATUS_ACCEPTED)
+                .toList();
+
+        Long days = 0L;
+        for(Reservation res : reservations){
+            days += DAYS.between(res.getStartTime(), (res.getEndTime().plusDays(1)));
+        }
+
+        responseObserver.onNext(DaysReservations.newBuilder()
+                .setNumOfDays(days)
                 .build());
         responseObserver.onCompleted();
     }

@@ -86,6 +86,10 @@ message CancelPercentage{
   int32 allReservations = 1;
   int32 cancelledReservations = 2;
 }
+message DaysReservations{
+  int64 numOfDays = 1;
+}
+
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
@@ -105,4 +109,5 @@ service ReservationService {
   rpc HasVisited(HasVisitedReq)returns(HasVisitedResp);
   rpc hadFiveReservationsInPast(AccommodationId) returns(FiveReservationsInPast);
   rpc getCancelPercentage(AccommodationId) returns(CancelPercentage);
+  rpc getReservationDays(AccommodationId) returns(DaysReservations);
 }
