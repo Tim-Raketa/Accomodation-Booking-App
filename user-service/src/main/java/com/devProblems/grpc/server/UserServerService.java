@@ -169,18 +169,25 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         // dobaviti sve id-eve smjestaja od datog hosta
         HostIdReq hostIdReq = HostIdReq.newBuilder().setHostId(request.getUsername()).build();
         ListOfAccommodationIdsResp listOfAccommodationIdsResp = synchronousAccommodation.getAccommodationIdsByHostId(hostIdReq);
-        //List<Long> accommodationIds_resp = ListOfAccommodationIdsResp.newBuilder().getAccommodationIdsList();
         List<Long> accommodationIds_resp = listOfAccommodationIdsResp.getAccommodationIdsList();
+
         // 2. Stopa otkazivanja
+        Integer allReservations = 0;
+        Integer cancelledReservations = 0;
+        for (Long acc_resp : accommodationIds_resp) {
+            allReservations += synchronousReservation.getCancelPercentage(AccommodationId.newBuilder().setId(acc_resp).build()).getAllReservations();
+            cancelledReservations += synchronousReservation.getCancelPercentage(AccommodationId.newBuilder().setId(acc_resp).build()).getCancelledReservations();
+        }
 
         // 3. Broj rezervacija u proslosti
         Integer numOfReservationsInPast = 0;
         for (Long acc_resp : accommodationIds_resp) {
         numOfReservationsInPast += synchronousReservation.hadFiveReservationsInPast(AccommodationId.newBuilder().setId(acc_resp).build()).getFiveResPast();
         }
+
         // 4. Ukupno trajanje svih rezervacija
 
-        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5) {
+        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5 && (cancelledReservations.floatValue()/allReservations.floatValue()) < 0.05) {
             user.setProminent(true);
             responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
         } else {

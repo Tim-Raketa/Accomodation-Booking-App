@@ -368,4 +368,24 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         responseObserver.onNext(FiveReservationsInPast.newBuilder().setFiveResPast(reservations.size()).build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getCancelPercentage(AccommodationId request, StreamObserver<CancelPercentage> responseObserver){
+        List<Reservation> allReservations = repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId() == request.getId() &
+                        (reservation.getStatus() == ReservationStatus.RESERVATION_STATUS_ACCEPTED ||
+                        reservation.getStatus() == ReservationStatus.RESERVATION_STATUS_CANCELED))
+                .toList();
+
+        List<Reservation> cancelledReservations = repository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodationId() == request.getId() &
+                        reservation.getStatus() == ReservationStatus.RESERVATION_STATUS_CANCELED)
+                .toList();
+
+        responseObserver.onNext(CancelPercentage.newBuilder()
+                .setAllReservations(allReservations.size())
+                .setCancelledReservations(cancelledReservations.size())
+                .build());
+        responseObserver.onCompleted();
+    }
 }
