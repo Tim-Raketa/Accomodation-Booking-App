@@ -1,0 +1,16 @@
+grpc:
+  server:
+    port: 9005
+  grpc-user-service:
+    address: static://localhost:9002
+    negotiationType: plaintext
+  grpc-reservation-service:
+    address: static://localhost:9001
+    negotiationType: plaintext
+  grpc-accommodation-grader-service:
+    address: static://localhost:9004
+    negotiationType: plaintext
+spring.date:
+  neo4j.uri: "bolt://localhost"
+  neo4j.username: "neo4j"
+  neo4j.password: "ftn"

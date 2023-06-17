@@ -15,4 +15,7 @@ grpc:
     grpc-accommodation-grader-service:
       address: static://localhost:9004
       negotiationType: plaintext
+    grpc-accommodation-reccommender-service:
+      address: static://localhost:9005
+      negotiationType: plaintext
 

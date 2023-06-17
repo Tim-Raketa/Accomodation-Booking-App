@@ -10,6 +10,7 @@
         <module>user-service</module>
         <module>accommodation-service</module>
         <module>accommodation-grader-service</module>
+        <module>accommodatio-reccommender-service</module>
         <module>proto</module>
     </modules>
     <groupId>com.sarang.devproblems</groupId>
