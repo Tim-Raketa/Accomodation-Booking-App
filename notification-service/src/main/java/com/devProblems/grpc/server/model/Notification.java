@@ -20,8 +20,5 @@ public class Notification {
 
     private String userToNotify;
 
-    private String href;
-
-
     private boolean opened;
 }

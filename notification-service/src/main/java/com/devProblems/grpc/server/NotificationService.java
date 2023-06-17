@@ -21,12 +21,12 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationsRepository;
     public void notifyUser(String email){
-        simpMessagingTemplate.convertAndSend("/notify/"+email,"New notification.");
+        simpMessagingTemplate.convertAndSend("/notify/"+email,"New notification was added to the db.");
     }
 
     public Notification addNotification(Notification notification){
-        notification = notificationsRepository.save(notification);
         notification.setOpened(false);
+        notification = notificationsRepository.save(notification);
         notifyUser(notification.getUserToNotify());
         return notification;
     }
