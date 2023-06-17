@@ -30,4 +30,15 @@ public class NotificationService {
         notifyUser(notification.getUserToNotify());
         return notification;
     }
+    public Notification openNotification(Long id) {
+        for(Notification n : notificationsRepository.findAll()){
+            if(n.getId().equals(id)){
+                n.setOpened(true);
+                notificationsRepository.save(n);
+                notifyUser(n.getUserToNotify());
+                return n;
+            }
+        }
+        return null;
+    }
 }
