@@ -45,7 +45,7 @@ message UpdateReq{
   string username=7;
 }
 message AccommodationId{
-  int64 id=1;
+  int64 id = 1;
 }
 message UsernameReq{
   string username=1;
@@ -78,6 +78,9 @@ message HasVisitedReq{
 message HasVisitedResp{
   repeated int64 accommodationId=1;
 }
+message FiveReservationsInPast{
+  int32 fiveResPast = 1;
+}
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
@@ -95,4 +98,5 @@ service ReservationService {
   rpc showAllAcceptedReservationsAccommodation(AccommodationId) returns(allPending);
   rpc deleteAllForAccommodation(AccommodationId) returns(isAvailable);
   rpc HasVisited(HasVisitedReq)returns(HasVisitedResp);
+  rpc hadFiveReservationsInPast(AccommodationId) returns(FiveReservationsInPast);
 }

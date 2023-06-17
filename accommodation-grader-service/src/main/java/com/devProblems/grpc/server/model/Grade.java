@@ -1,6 +1,5 @@
 package com.devProblems.grpc.server.model;
 
-import com.devProblems.AccommodationGrade;
 import com.devProblems.CreateAccommodationGrade;
 import lombok.*;
 import org.springframework.data.annotation.Id;

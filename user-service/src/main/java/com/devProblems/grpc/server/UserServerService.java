@@ -8,6 +8,8 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.devProblems.grpc.server.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @GrpcService
@@ -161,16 +163,24 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
 
         // 1. Srednja ocjena
         GetHostGrade username = GetHostGrade.newBuilder().setHostId(request.getUsername()).build();
-        HostGradeValue response = synchronousGrader.getAvgHostGrade(username);
-        Double avgHostGrade = response.getGrade();
-        // ovdje dobavljanje 2.
+        HostGradeValue hostGradeValue = synchronousGrader.getAvgHostGrade(username);
+        Double avgHostGrade = hostGradeValue.getGrade();
 
-        // ovdje dobavljanje 3.
+        // dobaviti sve id-eve smjestaja od datog hosta
+        HostIdReq hostIdReq = HostIdReq.newBuilder().setHostId(request.getUsername()).build();
+        ListOfAccommodationIdsResp listOfAccommodationIdsResp = synchronousAccommodation.getAccommodationIdsByHostId(hostIdReq);
+        //List<Long> accommodationIds_resp = ListOfAccommodationIdsResp.newBuilder().getAccommodationIdsList();
+        List<Long> accommodationIds_resp = listOfAccommodationIdsResp.getAccommodationIdsList();
+        // 2. Stopa otkazivanja
 
-        // ovdje dobavljanje 4.
+        // 3. Broj rezervacija u proslosti
+        Integer numOfReservationsInPast = 0;
+        for (Long acc_resp : accommodationIds_resp) {
+        numOfReservationsInPast += synchronousReservation.hadFiveReservationsInPast(AccommodationId.newBuilder().setId(acc_resp).build()).getFiveResPast();
+        }
+        // 4. Ukupno trajanje svih rezervacija
 
-        // ako ispuni sve uslove uradi ovo
-        if (avgHostGrade > 4.7) {
+        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5) {
             user.setProminent(true);
             responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
         } else {
