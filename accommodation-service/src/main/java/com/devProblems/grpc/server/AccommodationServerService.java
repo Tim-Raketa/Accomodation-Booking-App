@@ -11,7 +11,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +165,14 @@ public class AccommodationServerService extends AccommodationServiceGrpc.Accommo
     public void getAccommodationsByHostId(HostIdReq request, StreamObserver<ListOfAccommodationResp> responseObserver) {
         List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId()) &&accommodation.getDeleted()==false).toList();
         responseObserver.onNext(ListOfAccommodationResp.newBuilder().addAllAccommodations(convert(accommodations)).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAccommodationIdsByHostId(HostIdReq request, StreamObserver<ListOfAccommodationIdsResp> responseObserver) {
+        List<Accommodation> accommodations = accommodationRepository.findAll().stream().filter(accommodation -> accommodation.getHostId().equals(request.getHostId()) && accommodation.getDeleted() == false).toList();
+        List<Long> response = accommodations.stream().map(accommodation -> accommodation.getId()).toList();
+        responseObserver.onNext(ListOfAccommodationIdsResp.newBuilder().addAllAccommodationIds(response).build());
         responseObserver.onCompleted();
     }
 
