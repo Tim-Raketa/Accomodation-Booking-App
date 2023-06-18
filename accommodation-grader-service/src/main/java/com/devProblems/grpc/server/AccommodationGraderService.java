@@ -62,6 +62,12 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
             hostGrade.setId(seqGen.getSequenceNumber(hostGrade.SEQUENCE_NAME));
             hostGradesRepository.save(hostGrade);
             success = true;
+            synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                    .setMessage("User "+hostGrade.getUsername()+" has graded you ")
+                    .setTitle("Grading")
+                    .setUserToNotify(hostGrade.getHostId())
+                    .build()
+            );
         }
         responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();
