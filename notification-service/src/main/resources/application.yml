@@ -4,6 +4,10 @@ server:
 grpc:
   server:
     port: 9005
+  client:
+    grpc-user-service:
+      address: static://localhost:9002
+      negotiationType: plaintext
 spring:
   data:
     mongodb:

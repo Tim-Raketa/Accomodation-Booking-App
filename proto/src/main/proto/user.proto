@@ -17,6 +17,7 @@ message UserReq{
     string residency = 6;
     UserType type = 7;
     int32 CancelCount=8;
+    string notificationTypes=9;
 }
 
 message Created{
@@ -62,6 +63,7 @@ message EditReq{
   string oldUsername = 8;
   int32 cancelCount = 9;
   bool prominent = 10;
+  string notificationTypes=11;
 }
 
 service UserService {

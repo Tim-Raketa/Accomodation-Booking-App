@@ -25,6 +25,7 @@ public class User {
     private UserType type;
     private Integer CancelCount;
     private Boolean prominent;
+    private String notificationTypes;
 
     public User(UserReq req){
         this.username = req.getUsername();
@@ -35,6 +36,7 @@ public class User {
         this.residency = req.getResidency();
         this.type = req.getType();
         this.CancelCount=req.getCancelCount();
+        this.notificationTypes="ReservationReq,ReservationCancel,AccommodationGrade,HostGrade,ProminentStatus,ReservationResponse";
     }
     public User(EditReq req){
         this.username = req.getUsername();
@@ -46,6 +48,7 @@ public class User {
         this.type = req.getType();
         this.CancelCount = req.getCancelCount();
         this.prominent = req.getProminent();
+        this.notificationTypes=req.getNotificationTypes();
     }
 
 
