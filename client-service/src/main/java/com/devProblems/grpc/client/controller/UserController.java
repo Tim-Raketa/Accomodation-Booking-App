@@ -32,8 +32,12 @@ public class UserController {
     public UserTokenState edit(@RequestBody EditDTO editDTO){
         return userService.edit(editDTO);
     }
+
     @DeleteMapping(value = "/{username}")
     public Boolean delete(@PathVariable String username){
         return userService.delete(username);
     }
+
+    @GetMapping(value = "/prominent-host/{username}")
+    public Boolean getProminentStatus(@PathVariable String username) { return userService.getProminentStatus(username); }
 }

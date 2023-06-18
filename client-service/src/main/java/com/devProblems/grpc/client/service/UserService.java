@@ -70,4 +70,13 @@ public class UserService {
 
         return response.getCreated();
     }
+
+    public Boolean getProminentStatus(String username) {
+        Prominent response = synchronousUser.getProminentStatus(
+                UserId.newBuilder()
+                        .setUsername(username)
+                        .build());
+
+        return response.getProminent();
+    }
 }

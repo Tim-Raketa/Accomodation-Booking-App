@@ -8,21 +8,26 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.devProblems.grpc.server.model.User;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @GrpcService
 public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
+
     @Autowired
     UserRepository repository;
     @GrpcClient("grpc-reservation-service")
     ReservationServiceGrpc.ReservationServiceBlockingStub synchronousReservation;
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousAccommodation;
+    @GrpcClient("grpc-accommodation-grader-service")
+    AccommodationGraderServiceGrpc.AccommodationGraderServiceBlockingStub synchronousGrader;
 
     @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
         User newUser = new User(request);
+        newUser.setProminent(false);
         Optional<User> tempUser = repository.findById(newUser.getUsername());
         if (tempUser.isEmpty()) {
             newUser = repository.save(newUser);
@@ -151,4 +156,50 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
             }
             responseObserver.onCompleted();
     }
+
+    @Override
+    public void getProminentStatus(UserId request, StreamObserver<Prominent> responseObserver){
+        User user = repository.findById(request.getUsername()).get();
+
+        // 1. Srednja ocjena
+        GetHostGrade username = GetHostGrade.newBuilder().setHostId(request.getUsername()).build();
+        HostGradeValue hostGradeValue = synchronousGrader.getAvgHostGrade(username);
+        Double avgHostGrade = hostGradeValue.getGrade();
+
+        // dobaviti sve id-eve smjestaja od datog hosta
+        HostIdReq hostIdReq = HostIdReq.newBuilder().setHostId(request.getUsername()).build();
+        ListOfAccommodationIdsResp listOfAccommodationIdsResp = synchronousAccommodation.getAccommodationIdsByHostId(hostIdReq);
+        List<Long> accommodationIds_resp = listOfAccommodationIdsResp.getAccommodationIdsList();
+
+        // 2. Stopa otkazivanja
+        Integer allReservations = 0;
+        Integer cancelledReservations = 0;
+        for (Long acc_resp : accommodationIds_resp) {
+            allReservations += synchronousReservation.getCancelPercentage(AccommodationId.newBuilder().setId(acc_resp).build()).getAllReservations();
+            cancelledReservations += synchronousReservation.getCancelPercentage(AccommodationId.newBuilder().setId(acc_resp).build()).getCancelledReservations();
+        }
+
+        // 3. Broj rezervacija u proslosti
+        Integer numOfReservationsInPast = 0;
+        for (Long acc_resp : accommodationIds_resp) {
+        numOfReservationsInPast += synchronousReservation.hadFiveReservationsInPast(AccommodationId.newBuilder().setId(acc_resp).build()).getFiveResPast();
+        }
+
+        // 4. Ukupno trajanje svih rezervacija
+        Long reservationDays = (long) 0;
+        for (Long acc_resp : accommodationIds_resp) {
+            reservationDays += synchronousReservation.getReservationDays(AccommodationId.newBuilder().setId(acc_resp).build()).getNumOfDays();
+        }
+
+        if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5 && (cancelledReservations.floatValue()/allReservations.floatValue()) < 0.05 && reservationDays > 50L) {
+            user.setProminent(true);
+            responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
+        } else {
+            user.setProminent(false);
+            responseObserver.onNext(Prominent.newBuilder().setProminent(false).build());
+        }
+        repository.save(user);
+        responseObserver.onCompleted();
+    }
+
 }

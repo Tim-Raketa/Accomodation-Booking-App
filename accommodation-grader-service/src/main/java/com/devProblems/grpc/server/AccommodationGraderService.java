@@ -1,7 +1,9 @@
 package com.devProblems.grpc.server;
 
 import com.devProblems.grpc.server.model.Grade;
+import com.devProblems.grpc.server.model.HostGrade;
 import com.devProblems.grpc.server.repo.AccommodationGradesRepository;
+import com.devProblems.grpc.server.repo.HostGradesRepository;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -19,6 +21,9 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     SequenceGeneratorService seqGen;
     @Autowired
     AccommodationGradesRepository repository;
+    @Autowired
+    HostGradesRepository hostGradesRepository;
+
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClient;
     @GrpcClient("grpc-notification-service")
@@ -48,6 +53,20 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void createGradeForHost(CreateHostGrade request, StreamObserver<Successful> responseObserver){
+        boolean success = false;
+        Optional<HostGrade> grade = hostGradesRepository.findByHostIdAndUsername(request.getHostId(), request.getUsername());
+        if(grade.isEmpty()){
+            HostGrade hostGrade = new HostGrade(request);
+            hostGrade.setId(seqGen.getSequenceNumber(hostGrade.SEQUENCE_NAME));
+            hostGradesRepository.save(hostGrade);
+            success = true;
+        }
+        responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
+        responseObserver.onCompleted();
+    }
+
 
     @Override
     public void updateGrade(CreateAccommodationGrade request, StreamObserver<Successful> responseObserver) {
@@ -58,6 +77,20 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
             grade.get().setTimeStamp(LocalDateTime.parse(request.getTime()));
             repository.save(grade.get());
             success=true;
+        }
+        responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void updateHostGrade(CreateHostGrade request, StreamObserver<Successful> responseObserver){
+        boolean success = false;
+        Optional<HostGrade> grade = hostGradesRepository.findByHostIdAndUsername(request.getHostId(), request.getUsername());
+        if(grade.isPresent()){
+            grade.get().setGrade(request.getGrade());
+            grade.get().setTimeStamp(LocalDateTime.parse(request.getTime()));
+            hostGradesRepository.save(grade.get());
+            success = true;
         }
         responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();
@@ -76,8 +109,27 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     }
 
     @Override
+    public void deleteHostGrade(SpecificHostGrade request, StreamObserver<Successful> responseObserver){
+        boolean success = false;
+        Optional<HostGrade> grade = hostGradesRepository.findByHostIdAndUsername(request.getHostId(), request.getUsername());
+        if(grade.isPresent()){
+            hostGradesRepository.delete(grade.get());
+            success = true;
+        }
+        responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getSpecificGrade(SpecificGrade request, StreamObserver<CreateAccommodationGrade> responseObserver) {
         Optional<Grade> grade=repository.findByAccommodationIdAndUsername(request.getAccommodationId(),request.getUsername());
+        responseObserver.onNext(grade.get().ToResp());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getSpecificHostGrade(SpecificHostGrade request, StreamObserver<CreateHostGrade> responseObserver){
+        Optional<HostGrade> grade = hostGradesRepository.findByHostIdAndUsername(request.getHostId(), request.getUsername());
         responseObserver.onNext(grade.get().ToResp());
         responseObserver.onCompleted();
     }
@@ -92,10 +144,28 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
     }
 
     @Override
+    public void getAllHostGrades(GetHostGrade request, StreamObserver<AllHostGrades> responseObserver){
+        responseObserver.onNext(AllHostGrades.newBuilder()
+                .addAllGrades(hostGradesRepository.findAllByHostId(request.getHostId())
+                        .stream().map(HostGrade::ToResp).toList())
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getAllGradesUser(UserMsg request, StreamObserver<AllGrades> responseObserver) {
         responseObserver.onNext(AllGrades.newBuilder()
                 .addAllGrades(repository.findAllByUsername(request.getUsername())
                         .stream().map(Grade::ToResp).toList())
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAllHostGradesByUser(UserMsg request, StreamObserver<AllHostGrades> responseObserver){
+        responseObserver.onNext(AllHostGrades.newBuilder()
+                .addAllGrades(hostGradesRepository.findAllByUsername(request.getUsername())
+                        .stream().map(HostGrade::ToResp).toList())
                 .build());
         responseObserver.onCompleted();
     }
@@ -107,6 +177,15 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
                 .mapToInt(grade->grade.getGrade()).average().getAsDouble();
             responseObserver.onNext(AccommodationGrade.newBuilder().setGrade(average).build());
             responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAvgHostGrade(GetHostGrade request, StreamObserver<HostGradeValue> responseObserver){
+        Double average = hostGradesRepository.findAll().stream()
+                .filter(grade -> grade.getHostId().equals(request.getHostId()))
+                .mapToInt(grade -> grade.getGrade()).average().getAsDouble();
+        responseObserver.onNext(HostGradeValue.newBuilder().setGrade(average).build());
+        responseObserver.onCompleted();
     }
 
 }

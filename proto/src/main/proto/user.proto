@@ -23,15 +23,21 @@ message Created{
   bool created = 1;
 }
 
+message Prominent{
+  bool prominent = 1;
+}
+
 message Empty {}
 
 message UserTokenStateRes {
   string accessToken = 1;
   string role = 2;
 }
+
 message UsernameMsg {
   string username = 1;
 }
+
 message CancelCountMsg {
   int32 cancelCount = 1;
 }
@@ -44,6 +50,7 @@ message LoginReq {
 message UserId {
   string username = 1;
 }
+
 message EditReq{
   string username = 1;
   string password = 2;
@@ -54,8 +61,8 @@ message EditReq{
   UserType type = 7;
   string oldUsername = 8;
   int32 cancelCount = 9;
+  bool prominent = 10;
 }
-
 
 service UserService {
     rpc register(UserReq) returns (Created){}
@@ -65,4 +72,5 @@ service UserService {
     rpc getCancelCount(UsernameMsg) returns (CancelCountMsg){}
     rpc IncreaseCancelCount(UsernameMsg) returns(CancelCountMsg){}
     rpc DeleteUser(UserId) returns(Created){}
+    rpc getProminentStatus(UserId) returns(Prominent){}
 }

@@ -9,7 +9,7 @@ enum ReservationStatus {
   RESERVATION_STATUS_ACCEPTED = 1;
   RESERVATION_STATUS_DECLINED = 2;
   RESERVATION_STATUS_DELETED = 3;
-  RESERVATION_STATUS_CANCELED=4;
+  RESERVATION_STATUS_CANCELED = 4;
 }
 
 message ReservationReq{
@@ -45,7 +45,7 @@ message UpdateReq{
   string username=7;
 }
 message AccommodationId{
-  int64 id=1;
+  int64 id = 1;
 }
 message UsernameReq{
   string username=1;
@@ -78,6 +78,18 @@ message HasVisitedReq{
 message HasVisitedResp{
   repeated int64 accommodationId=1;
 }
+message FiveReservationsInPast{
+  int32 fiveResPast = 1;
+}
+
+message CancelPercentage{
+  int32 allReservations = 1;
+  int32 cancelledReservations = 2;
+}
+message DaysReservations{
+  int64 numOfDays = 1;
+}
+
 
 service ReservationService {
   rpc CreateReservation(ReservationReq) returns (ReservationResp);
@@ -95,4 +107,7 @@ service ReservationService {
   rpc showAllAcceptedReservationsAccommodation(AccommodationId) returns(allPending);
   rpc deleteAllForAccommodation(AccommodationId) returns(isAvailable);
   rpc HasVisited(HasVisitedReq)returns(HasVisitedResp);
+  rpc hadFiveReservationsInPast(AccommodationId) returns(FiveReservationsInPast);
+  rpc getCancelPercentage(AccommodationId) returns(CancelPercentage);
+  rpc getReservationDays(AccommodationId) returns(DaysReservations);
 }
