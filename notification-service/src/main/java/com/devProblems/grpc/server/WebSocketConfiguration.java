@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/reservation");
+        registry.enableSimpleBroker("/notify");
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {

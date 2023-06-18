@@ -17,7 +17,8 @@ import java.util.*;
 
 @GrpcService
 public class ReservationService extends ReservationServiceGrpc.ReservationServiceImplBase {
-
+    @GrpcClient("grpc-notification-service")
+    NotificationServiceGrpc.NotificationServiceBlockingStub synchronousNotification;
     @GrpcClient("grpc-user-service")
     UserServiceGrpc.UserServiceBlockingStub synchronousClient;
 
@@ -104,6 +105,11 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
             @Override
             public void onCompleted() {
                 //step 4 a) set the status of reservation to accepted if true
+                AccommodationResp accommodation=synchronousClientAccommodation.getById(AccommodationIdReq.newBuilder().setId(res.getAccommodationId()).build());
+                synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                        .setMessage(res.getUsername() +" has just issued a request for reservation")
+                        .setUserToNotify(accommodation.getHostId())
+                        .build());
                 responseObserver.onNext(
                         ReservationResp.newBuilder()
                                 .setStartDate(res.getStartTime().toString())
@@ -187,6 +193,11 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         repository.save(reservation);
         synchronousClient.increaseCancelCount(UsernameMsg.newBuilder().setUsername(reservation.getUsername()).build());
 
+        AccommodationResp accommodation=synchronousClientAccommodation.getById(AccommodationIdReq.newBuilder().setId(reservation.getAccommodationId()).build());
+        synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                .setMessage(reservation.getUsername() +" has just cancelled a reservation")
+                        .setUserToNotify(accommodation.getHostId())
+                .build());
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
     }
@@ -237,6 +248,10 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         reservations.forEach(res->res.setStatus(ReservationStatus.RESERVATION_STATUS_DELETED));
         repository.saveAll(reservations);
 
+        synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                .setMessage("Your reservation has been accepted ")
+                .setUserToNotify(reservation.getUsername())
+                .build());
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
     }

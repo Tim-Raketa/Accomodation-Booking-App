@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.devProblems;
+
+message CreateNotification{
+  string title=1;
+  string message=2;
+  string userToNotify=3;
+}
+
+message ReturnNotification{
+  int32 id=1;
+  string title=2;
+  string message=3;
+  string userToNotify=4;
+  bool opened=5;
+}
+message NotificationId{
+  int32 id=1;
+}
+message NotificationList{
+  repeated ReturnNotification notifications=1;
+}
+service NotificationService {
+  rpc GetAllNotifications(CreateNotification) returns (NotificationList);
+  rpc AddNotifications(CreateNotification) returns (ReturnNotification);
+  rpc OpenNotifications(NotificationId) returns (ReturnNotification);
+
+}

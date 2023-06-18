@@ -16,6 +16,6 @@ grpc:
       address: static://localhost:9004
       negotiationType: plaintext
     grpc-notification-service:
-      address: static://localhost:9006
+      address: static://localhost:9005
       negotiationType: plaintext
 
