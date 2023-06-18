@@ -23,6 +23,8 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousAccommodation;
     @GrpcClient("grpc-accommodation-grader-service")
     AccommodationGraderServiceGrpc.AccommodationGraderServiceBlockingStub synchronousGrader;
+    @GrpcClient("grpc-notification-service")
+    NotificationServiceGrpc.NotificationServiceBlockingStub synchronousNotification;
 
     @Override
     public void register(UserReq request, StreamObserver<Created> responseObserver) {
@@ -192,12 +194,27 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
         }
 
         if (avgHostGrade > 4.7 && numOfReservationsInPast >= 5 && (cancelledReservations.floatValue()/allReservations.floatValue()) < 0.05 && reservationDays > 50L) {
+            if(!user.getProminent())
+            synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                    .setMessage("You have gained the prominent status")
+                    .setTitle("ProminentStatus")
+                    .setUserToNotify(user.getName())
+                    .build()
+            );
             user.setProminent(true);
             responseObserver.onNext(Prominent.newBuilder().setProminent(true).build());
         } else {
+            if(user.getProminent())
+            synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                    .setMessage("You have lost the prominent status")
+                    .setTitle("ProminentStatus")
+                    .setUserToNotify(user.getName())
+                    .build()
+            );
             user.setProminent(false);
             responseObserver.onNext(Prominent.newBuilder().setProminent(false).build());
         }
+
         repository.save(user);
         responseObserver.onCompleted();
     }
