@@ -68,7 +68,7 @@ public class UserServerService extends UserServiceGrpc.UserServiceImplBase{
                     .setSurname(tempUser.get().getSurname())
                     .setEmail(tempUser.get().getEmail())
                     .setResidency(tempUser.get().getResidency())
-                    .setType(tempUser.get().getType())
+                    .setType(tempUser.get().getType()).setNotificationTypes(tempUser.get().getNotificationTypes())
                     .build());
         responseObserver.onCompleted();
     }

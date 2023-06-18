@@ -22,6 +22,7 @@ public class EditDTO {
     private UserType type;
     private String oldUsername;
     private int cancelCount;
+    private String notificationTypes;
 
     public EditDTO(EditReq req){
         this.username = req.getUsername();
@@ -33,5 +34,6 @@ public class EditDTO {
         this.type = req.getType();
         this.oldUsername = req.getOldUsername();
         this.cancelCount = req.getCancelCount();
+        this.notificationTypes=req.getNotificationTypes();
     }
 }

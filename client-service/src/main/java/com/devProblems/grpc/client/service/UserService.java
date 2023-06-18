@@ -59,6 +59,7 @@ public class UserService {
                         .setResidency(editReq.getResidency())
                         .setType(editReq.getType())
                         .setOldUsername(editReq.getOldUsername())
+                        .setNotificationTypes(editReq.getNotificationTypes())
                         .build());
 
         return new UserTokenState(response);
