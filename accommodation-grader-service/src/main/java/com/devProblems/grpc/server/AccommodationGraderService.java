@@ -26,17 +26,29 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
 
     @GrpcClient("grpc-accommodation-service")
     AccommodationServiceGrpc.AccommodationServiceBlockingStub synchronousClient;
+    @GrpcClient("grpc-notification-service")
+    NotificationServiceGrpc.NotificationServiceBlockingStub synchronousNotification;
 
     @Override
     public void createGrade(CreateAccommodationGrade request, StreamObserver<Successful> responseObserver) {
         boolean success=false;
         Optional<Grade> grade=repository.findByAccommodationIdAndUsername(request.getAccommodationId(),request.getUsername());
         if(grade.isEmpty()){
-            Grade grades=new Grade(request);
-            grades.setId(seqGen.getSequenceNumber(grades.SEQUENCE_NAME));
-            repository.save(grades);
+            Grade newGrade=new Grade(request);
+            newGrade.setId(seqGen.getSequenceNumber(newGrade.SEQUENCE_NAME));
+            repository.save(newGrade);
             success=true;
+            AccommodationResp accommodation=synchronousClient.getById(AccommodationIdReq.newBuilder().setId(newGrade.getAccommodationId()).build());
+            String hostId=accommodation.getHostId();
+            synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                    .setMessage("Accommodation "+accommodation.getName()+" has been graded by "+grade.get().getUsername())
+                    .setTitle("AccommodationGrade")
+                    .setUserToNotify(hostId)
+                    .build()
+            );
         }
+
+
         responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();
     }
@@ -50,6 +62,12 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
             hostGrade.setId(seqGen.getSequenceNumber(hostGrade.SEQUENCE_NAME));
             hostGradesRepository.save(hostGrade);
             success = true;
+            synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                    .setMessage("User "+hostGrade.getUsername()+" has graded you ")
+                    .setTitle("HostGrade")
+                    .setUserToNotify(hostGrade.getHostId())
+                    .build()
+            );
         }
         responseObserver.onNext(Successful.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();

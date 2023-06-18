@@ -19,6 +19,7 @@ public class UserDTO {
     private String email;
     private String residency;
     private UserType type;
+    private String notificationTypes;
 
     public UserDTO(UserReq req){
         this.username = req.getUsername();
@@ -28,5 +29,6 @@ public class UserDTO {
         this.email = req.getEmail();
         this.residency = req.getResidency();
         this.type = req.getType();
+        this.notificationTypes=req.getNotificationTypes();
     }
 }

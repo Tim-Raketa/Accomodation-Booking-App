@@ -11,6 +11,9 @@ grpc:
     grpc-accommodation-grader-service:
       address: static://localhost:9004
       negotiationType: plaintext
+    grpc-notification-service:
+      address: static://localhost:9005
+      negotiationType: plaintext
 spring:
   data:
     mongodb:
