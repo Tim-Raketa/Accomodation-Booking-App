@@ -108,6 +108,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 AccommodationResp accommodation=synchronousClientAccommodation.getById(AccommodationIdReq.newBuilder().setId(res.getAccommodationId()).build());
                 synchronousNotification.addNotifications(CreateNotification.newBuilder()
                         .setMessage(res.getUsername() +" has just issued a request for reservation")
+                        .setTitle("ReservationReq")
                         .setUserToNotify(accommodation.getHostId())
                         .build());
                 responseObserver.onNext(
@@ -168,7 +169,12 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         }
         reservation.setStatus(ReservationStatus.RESERVATION_STATUS_DECLINED);
         repository.save(reservation);
-
+        AccommodationResp accommodation=synchronousClientAccommodation.getById(AccommodationIdReq.newBuilder().setId(reservation.getAccommodationId()).build());
+        synchronousNotification.addNotifications(CreateNotification.newBuilder()
+                .setMessage("Your reservation request has been declined")
+                .setTitle("ReservationResponse")
+                .setUserToNotify(accommodation.getHostId())
+                .build());
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
     }
@@ -198,7 +204,8 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
         AccommodationResp accommodation=synchronousClientAccommodation.getById(AccommodationIdReq.newBuilder().setId(reservation.getAccommodationId()).build());
         synchronousNotification.addNotifications(CreateNotification.newBuilder()
                 .setMessage(reservation.getUsername() +" has just cancelled a reservation")
-                        .setUserToNotify(accommodation.getHostId())
+                .setTitle("ReservationCancel")
+                .setUserToNotify(accommodation.getHostId())
                 .build());
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());
         responseObserver.onCompleted();
@@ -253,6 +260,7 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
 
         synchronousNotification.addNotifications(CreateNotification.newBuilder()
                 .setMessage("Your reservation has been accepted ")
+                .setTitle("ReservationResponse")
                 .setUserToNotify(reservation.getUsername())
                 .build());
         responseObserver.onNext(isAvailable.newBuilder().setAvailable(true).build());

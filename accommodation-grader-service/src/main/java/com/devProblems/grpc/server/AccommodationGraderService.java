@@ -42,7 +42,7 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
             String hostId=accommodation.getHostId();
             synchronousNotification.addNotifications(CreateNotification.newBuilder()
                     .setMessage("Accommodation "+accommodation.getName()+" has been graded by "+grade.get().getUsername())
-                    .setTitle("Grading")
+                    .setTitle("AccommodationGrade")
                     .setUserToNotify(hostId)
                     .build()
             );
@@ -64,7 +64,7 @@ public class AccommodationGraderService extends AccommodationGraderServiceGrpc.A
             success = true;
             synchronousNotification.addNotifications(CreateNotification.newBuilder()
                     .setMessage("User "+hostGrade.getUsername()+" has graded you ")
-                    .setTitle("Grading")
+                    .setTitle("HostGrade")
                     .setUserToNotify(hostGrade.getHostId())
                     .build()
             );
