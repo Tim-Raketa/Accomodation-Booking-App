@@ -431,4 +431,19 @@ public class ReservationService extends ReservationServiceGrpc.ReservationServic
                 .build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getById(AccommodationId request, StreamObserver<ReservationResp> responseObserver) {
+            var res=repository.findById(request.getId()).get();
+            responseObserver.onNext(ReservationResp.newBuilder()
+                    .setEndDate(res.getEndTime().toString())
+                    .setStartDate(res.getStartTime().toString())
+                    .setAccommodationId(res.getAccommodationId())
+                    .setNumberOfGuests(res.getNumberOfPeople())
+                    .setStatus(res.getStatus())
+                    .setUsername(res.getUsername())
+                    .setId(res.getId())
+                    .build());
+            responseObserver.onCompleted();
+    }
 }

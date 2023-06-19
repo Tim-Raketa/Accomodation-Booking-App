@@ -152,4 +152,8 @@ public class ReservationService {
         }
         return newList;
     }
+
+    public ReservationDTO getById(Long id) {
+        return new ReservationDTO(synchronousReservation.getById(AccommodationId.newBuilder().setId(id).build()));
+    }
 }
