@@ -61,6 +61,10 @@ public class ReservationsController {
     public List<PendingDTO> getReservationsAccepted(@PathVariable String username){
         return reservationService.getAllAccepted(username);
     }
+    @GetMapping("{id}")
+    public ReservationDTO getById(@PathVariable Long id){
+        return reservationService.getById(id);
+    }
     @PostMapping ("/available")
     public Boolean IsAvailable(@RequestBody CreateReservationDTO res){
         return reservationService.isAvailable(res);

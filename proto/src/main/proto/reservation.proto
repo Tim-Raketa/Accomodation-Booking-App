@@ -110,4 +110,5 @@ service ReservationService {
   rpc hadFiveReservationsInPast(AccommodationId) returns(FiveReservationsInPast);
   rpc getCancelPercentage(AccommodationId) returns(CancelPercentage);
   rpc getReservationDays(AccommodationId) returns(DaysReservations);
+  rpc getById(AccommodationId) returns (ReservationResp);
 }
