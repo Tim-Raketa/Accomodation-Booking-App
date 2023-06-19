@@ -137,7 +137,9 @@ public class AccommodationClientService {
                 .setLocation(filterReq.getLocation()).setNumberOfGuests(filterReq.getNumberOfGuests()).build();
         ListOfSearchResp response=synchronousAccommodation.search(request);
         List<SearchResp> list=response.getResponsesList();
-        list= list.stream().filter(accommodation->items.stream().allMatch(accommodation.getPerks().toLowerCase()::contains)).toList();
+        list= list.stream().filter(accommodation->items.stream().allMatch(accommodation.getPerks().toLowerCase()::contains))
+                .filter(accommodation -> (accommodation.getTotalPrice() >= filterReq.getMinGrade() && accommodation.getTotalPrice() <= filterReq.getMaxGrade())).toList();
+
         return convertForSearch(list);
     }
 }
