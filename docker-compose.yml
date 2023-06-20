@@ -69,12 +69,12 @@ services:
       - 9004:9004
     depends_on:
       - GraderDb
+
   Notification-service:
-    image: accommodation-grader-service-2.6.2.jar:latest
-    container_name: grader-service
+    image: notification-service-2.6.2.jar:latest
+    container_name: Notification-service
     ports:
       - 8081:8081
-      - 9004:9004
     depends_on:
       - NotificationDb
 
