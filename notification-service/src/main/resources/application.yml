@@ -6,9 +6,9 @@ grpc:
     port: 9005
   client:
     grpc-user-service:
-      address: static://localhost:9002
+      address: static://User-service:9002
       negotiationType: plaintext
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/Notifications
+      uri: mongodb://NotificationDb:27017/Notifications

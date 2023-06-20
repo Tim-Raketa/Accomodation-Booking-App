@@ -4,7 +4,6 @@ services:
   ReservationDb:
     image: postgres:latest
     container_name: "ReservationDb"
-
     ports:
       - 8012:5432
     volumes:
@@ -33,20 +32,22 @@ services:
       - 8001:27017
     volumes:
       - ./mongo_store:/data/db
+
   NotificationDb:
     image: mongo:latest
     container_name: "NotificationDb"
     ports:
-      - 8001:27017
+      - 8004:27017
     volumes:
       - ./mongo_store1:/data/db
+
   GraderDb:
     image: mongo:latest
     container_name: "GraderDb"
     ports:
-      - 8001:27017
+      - 8005:27017
     volumes:
-      - ./mongo_store1:/data/db
+      - ./mongo_store2:/data/db
 
   Client-service:
     image: client-service-2.6.2.jar:latest
@@ -62,12 +63,20 @@ services:
     depends_on:
       - UserDb
   Grader-service:
-    image: user-service-2.6.2.jar:latest
-    container_name: user-service
+    image: accommodation-grader-service-2.6.2.jar:latest
+    container_name: Accommodation-grader-service
     ports:
-      - 9002:9002
+      - 9004:9004
     depends_on:
-      - UserDb
+      - GraderDb
+  Notification-service:
+    image: accommodation-grader-service-2.6.2.jar:latest
+    container_name: grader-service
+    ports:
+      - 8081:8081
+      - 9004:9004
+    depends_on:
+      - NotificationDb
 
   Reservation-service:
     image: reservation-service-2.6.2.jar:latest
@@ -84,5 +93,3 @@ services:
       - 9003:9003
     depends_on:
       - AccommodationDb
-
-

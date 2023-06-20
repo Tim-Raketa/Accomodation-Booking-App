@@ -6,16 +6,15 @@ grpc:
       address: static://Reservation-service:9001
       negotiationType: plaintext
     grpc-accommodation-service:
-      address: static://localhost:9003
+      address: static://Accommodation-service:9003
       negotiationType: plaintext
     grpc-accommodation-grader-service:
-      address: static://localhost:9004
+      address: static://Grader-service:9004
       negotiationType: plaintext
     grpc-notification-service:
-      address: static://localhost:9005
+      address: static://Notification-service:9005
       negotiationType: plaintext
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/Users
-# spring.data.mongodb.uri: mongodb://UserDb:27017/Users
+      uri: mongodb://UserDb:27017/Users
